@@ -2,7 +2,13 @@ import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, ShieldCheck } from 'lucide-react'
 import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import hero from '../../assets/hero.jpg'
+import Navbar from './Navbar'
+
+// Register ScrollTrigger
+gsap.registerPlugin(ScrollTrigger)
+
 const HeroSection = () => {
   const sectionRef = useRef(null)
   const contentRef = useRef(null)
@@ -36,23 +42,27 @@ const HeroSection = () => {
         { opacity: 0 },
         { opacity: 1, duration: 0.6, ease: 'power3.out', delay: 0.8 }
       )
-    }, sectionRef)
+
+
+  }, sectionRef)
 
     return () => ctx.revert()
   }, [])
 
   return (
+   
     <section 
-      ref={sectionRef}
-      className="relative min-h-screen w-full flex items-center justify-center overflow-hidden"
+      ref={sectionRef} 
+      className="relative min-h-screen rounded-b-2xl flex items-center justify-center overflow-hidden transition-all duration-300 "
     >
+      
       {/* Background Image */}
-      <div className="absolute inset-0 z-0">
-        <img 
-          src= {hero}
+      <div className="absolute inset-0 z-0 bg-orange-primary">
+         <img 
+          src={hero}
           alt="Fitness Background" 
           className="w-full h-full object-cover"
-        />
+        /> 
         {/* Dark overlay for text readability */}
         <div className="absolute inset-0 bg-black/60" />
       </div>

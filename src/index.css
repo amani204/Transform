@@ -1,42 +1,49 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
+
 @theme {
-  /* Orange family - from your tokens */
-  --color-orange-primary: #f9652f;      /* token-22412f0e / token-d4fc8e88 */
-  --color-orange-secondary: #e14e1a;    /* token-14ea674e */
-  --color-orange-tertiary: #c63e10;     /* token-fce7f052 */
+  /* Orange family */
+  --color-orange-primary: #f9652f;      
+  --color-orange-secondary: #e14e1a;    
+  --color-orange-tertiary: #c63e10;     
   
-  /* Yellow/Red accents */
-  --color-yellow-accent: #f5b614;        /* token-cc31ac1d */
-  --color-red-accent: #e5484d;           /* token-75a3d027 */
+  /* Yellow/Red  */
+  --color-yellow-accent: #f5b614;        
+  --color-red-accent: #e5484d;         
   
-  /* Dark theme colors - all from your tokens */
-  --color-dark-bg: #121212;              /* token-52ba1179 / token-70b6c782 */
-  --color-dark-surface: #1c1c1c;         /* token-daa25c6e */
-  --color-dark-card: #2a2a2a;            /* token-4e5f7a6f / token-57567991 */
-  --color-dark-border: #2b2b2b;           /* token-92b551fc */
-  --color-dark-hover: #3b3b3b;            /* token-257ba79f */
-  --color-dark-muted: #2b2b2b;            /* token-daa25c6e alternate */
+  /* Dark theme colors */
+  --color-dark-bg: #121212;              
+  --color-dark-surface: #1c1c1c;         
+  --color-dark-card: #2a2a2a;          
+  --color-dark-border: #2b2b2b;         
+  --color-dark-hover: #3b3b3b;            
+  --color-dark-muted: #2b2b2b;            
   
-  /* Text colors - dark mode only */
-  --color-text-primary: #ffffff;           /* token-7e10da5e / token-ff963739 */
-  --color-text-secondary: #ababab;         /* token-84d21274 */
-  --color-text-muted: #767676;              /* token-1c26a53d */
-  --color-text-inverse: #000000;            /* kept for potential use */
-  
-  /* Fonts */
-  --font-sans: 'Inter', system-ui, sans-serif;
+  /* Text colors */
+  --color-text-primary: #ffffff;           
+  --color-text-secondary: #ababab;         
+  --color-text-muted: #767676;              
+  --color-text-inverse: #000000;            
+}
+::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  background: transparent;
+}
+html {
+  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
 }
 
-/* Base styles - Dark mode only */
+/* Base styles*/
 body {
-  font-family: var(--font-sans);
+  overflow-x: hidden;
   transition: background-color 0.3s, color 0.3s;
   background-color: var(--color-dark-bg);
   color: var(--color-text-primary);
+
 }
 
-/* Custom components - Dark mode only */
+/* Custom components */
 @layer components {
   /* Buttons */
   .btn-primary {
