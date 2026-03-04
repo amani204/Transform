@@ -50,14 +50,19 @@ const Navbar = () => {
       gsap.set(navRef.current, {
         width: '80%',
         left: '10%',
-        backgroundColor: 'rgba(18, 18, 18, 0.3)', // dark-bg with opacity
+        skewX: -20,
+        backgroundColor:'rgba(18, 18, 18, 0.3)', // dark-bg with opacity
         backdropFilter: 'blur(15px)',
         WebkitBackdropFilter: 'blur(15px)',
-        borderRadius: '1rem',
         marginTop: '3rem', 
-        boxShadow: '0 8px 32px rgba(249, 101, 47, 0.15)',
-        border: '1px solid rgba(249, 101, 47, 0.1)'
+        border: '1px solid rgba(218, 252, 68, 1) '
       })
+
+
+
+
+    
+
     }, navRef)
     
     return () => ctx.revert()
@@ -106,14 +111,14 @@ const Navbar = () => {
         ref={navRef}
         className="fixed top-0 z-50 transition-all duration-300 "
       >
-        <div className="container-custom">
+        <div className="skew-x-20 container-custom">
           <div className="flex items-center justify-between h-16 px-8">
             
             {/* Logo*/}
             <Link 
               ref={logoRef}
               to="/" 
-              className="text-2xl font-black tracking-tight text-text-primary hover:text-orange-primary transition-colors duration-300"
+              className="text-2xl font-black tracking-tight text-white hover:text-primary transition-colors duration-300"
             >
               TRANSFORM
             </Link>
@@ -135,18 +140,17 @@ const Navbar = () => {
 
               {/* Desktop CTA */}
               <div ref={ctaRef} className="hidden md:block">
-                <Link
-                  to="/exercises"
+                <button
                   className="btn-primary text-sm py-2.5 px-6"
                 >
                   Get Started
-                </Link>
+                </button>
               </div>
 
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="md:hidden relative z-50 p-2.5 rounded-full bg-dark-surface text-text-primary transition-transform duration-300 hover:scale-110 border border-orange-primary/20"
+                className="md:hidden relative z-50 p-2.5 rounded-full text-white transition-transform duration-300 hover:scale-110 border border-primary/20"
               >
                 {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
@@ -173,11 +177,11 @@ const Navbar = () => {
               >
                 <div className="flex items-baseline gap-4">
                   <span className="text-text-muted text-sm font-medium">0{index + 1}</span>
-                  <span className="text-xl font-bold text-text-primary group-hover:text-orange-primary transition-colors duration-300">
+                  <span className="text-xl font-bold text-white group-hover:text-primary transition-colors duration-300">
                     {link.name}
                   </span>
                 </div>
-                <ArrowUpRight className="w-6 h-6 text-text-muted group-hover:text-orange-primary group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300" />
+                <ArrowUpRight className="w-6 h-6 text-text-muted group-hover:text-primary group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300" />
               </a>
             ))}
           </div>
@@ -188,7 +192,7 @@ const Navbar = () => {
             <Link
               to="/exercises"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="flex items-center justify-center w-full py-4 rounded-2xl bg-orange-primary text-text-primary text-lg font-bold hover:bg-orange-secondary transition-colors duration-300"
+              className="btn-primary flex items-center justify-center py-4 hover: transition-colors duration-300 "
             >
               Get Started Free
               <ArrowUpRight className="w-5 h-5 ml-2" />

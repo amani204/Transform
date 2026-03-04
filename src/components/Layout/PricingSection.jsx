@@ -1,0 +1,200 @@
+import { useState, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
+import { Check, ArrowRight, Calendar, Users, Sparkles, ChevronRight } from 'lucide-react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger)
+
+const PricingSection = () => {
+
+  const sectionRef = useRef(null)
+  const cardsRef = useRef([])
+
+  // GSAP Animations
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      
+      // Cards appear one after another from bottom
+      gsap.fromTo(cardsRef.current,
+        { 
+          opacity: 0, 
+          y: 100,
+          scale: 0.9
+        },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.8,
+          stagger: 0.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 70%',
+          }
+
+          
+        }
+      )
+      gsap.fromTo(sectionRef.current,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1, y: 0,
+          duration: 1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+          }
+        }
+      )
+
+    }, sectionRef)
+    
+    return () => ctx.revert()
+  }, [])
+
+  const programs = [
+    {
+      name: 'Starter',
+      price: 89,
+      period: '/mo',
+      description: 'Perfect for beginners looking to build consistency and confidence.',
+      features: [
+        '8 sessions / month (2x per week)',
+        'Personalized onboarding & goal assessment',
+        'Access to open gym hours',
+        'Movement & technique coaching',
+        'Progress tracking every 4 weeks'
+      ],
+      cta: 'Get Started',
+      popular: false,
+      borderColor: 'border border-white/20',
+    },
+    {
+      name: 'Elite',
+      price: 329,
+      period: '/mo',
+      description: 'Gentle, structured recovery for new mothers to help them get confidence and balance again.',
+      features: [
+        'Tailored postpartum training plan',
+        'Nutrition & recovery coaching',
+        'Weekly 1-on-1 check-ins',
+        'Ongoing support between sessions'
+      ],
+      cta: 'Get Started',
+      popular: true,
+      borderColor: 'border border-primary',
+      badge: 'Most Popular'
+    },
+    {
+      name: 'Core',
+      price: 449,
+      period: '/mo',
+      description: 'Workouts + nutrition designed around your cycle, energy, and hormonal needs',
+      features: [
+        'Custom periodized training cycles',
+        'Ready made cooked meals',
+        'Bi-weekly performance reviews',
+        'Priority messaging access'
+      ],
+      cta: 'Get Started',
+      popular: false,
+      borderColor: 'border border-white/20',
+      textColor: 'text-white/90'
+    }
+  ]
+
+  return (
+    <section 
+      ref={sectionRef}
+      className="py-20 bg-dark-bg relative overflow-hidden" 
+      id="pricing"
+    >
+      <div className="container-custom relative z-10">
+
+        {/* Programs Title */}
+        <div className="text-center mb-10">
+          <span className="text-primary font-black tracking-wider text-sm">PRICING</span>
+          <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 mt-4">
+            Signature Programs
+          </h3>
+          <p className="text-text-secondary max-w-2xl mx-auto">
+            Choose the program that fits your goals, lifestyle, and pace. Every plan includes 
+            personalized workouts, nutrition guidance, and weekly support.
+          </p>
+        </div>
+
+        {/* Pricing Cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-16">
+          {programs.map((program, index) => {
+            return (
+              <div
+                key={index}
+                ref={el => cardsRef.current[index] = el}
+                className={`bg-dark-card relative ${program.borderColor} ${
+                  program.popular ? 'p-10' : 'p-8'
+                }`}
+              >
+                {/* Popular Badge */}
+                {program.popular && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <span className=" bg-primary text-black text-xs font-bold px-4 py-1 scale-x-75">
+                    Most Popular
+                    </span>
+                  </div>
+                )}
+
+                {/* Program Name */}
+                <h3 className="text-xl font-bold text-primary mb-8 ">
+                  {program.name}
+                </h3>
+
+                {/* Price */}
+                <div className="mb-4">
+                  <span className="text-4xl font-black text-white">
+                    ${program.price}
+                  </span>
+                  <span className="text-text-muted ml-2">
+                    {program.period}
+                  </span>
+                </div>
+
+                {/* Description */}
+                <p className="text-text-secondary text-sm mb-6">
+                  {program.description}
+                </p>
+
+                {/* Features List */}
+                <div className="space-y-3 mb-8">
+                  {program.features.map((feature, i) => (
+                    <div key={i} className="flex items-start gap-3">
+                      <Check className="w-5 h-5 text-text-secondary shrink-0 mt-0.5" />
+                      <span className="text-text-secondary text-sm">
+                        {feature}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* CTA Button */}
+                <button
+                  to="/contact"
+                  className={` group w-[90%]
+                    transition-all duration-300 flex items-center justify-center gap-2  ${
+                  program.popular ? 'btn-primary' : 'btn-secondary' }`}
+                >
+                {program.cta}
+                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </div>
+            )
+          })}
+        </div>
+        </div>
+    </section>
+  )
+}
+
+export default PricingSection

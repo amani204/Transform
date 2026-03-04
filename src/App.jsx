@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Navbar from './components/Layout/Navbar'
 import { Route, BrowserRouter as Router } from 'react-router-dom'
 import Home from './pages/Home'
+import Footer from './components/Layout/Footer'
 
 function App() {
 
@@ -11,8 +12,9 @@ function App() {
     <Router>
      <Navbar/>
      <Home/>
+      <Footer/>
     </Router>
-    
+   
     </>
   )
 }

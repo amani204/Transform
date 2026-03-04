@@ -114,7 +114,10 @@ const TeamSection = () => {
     const ctx = gsap.context(() => {
       const marquee = marqueeRef.current
       const marqueeWidth = marquee.scrollWidth / 2 
+      
 
+
+      
       gsap.to(marquee, {
         x: -marqueeWidth,
         duration: 50,
@@ -124,6 +127,7 @@ const TeamSection = () => {
           x: gsap.utils.unitize(x => parseFloat(x) % marqueeWidth)
         }
       })
+      
     }, marqueeRef)
 
     return () => ctx.revert()
@@ -153,13 +157,13 @@ const TeamSection = () => {
     <section 
     
       ref={sectionRef}
-      className="section-padding bg-dark-bg relative overflow-hidden"
+      className="py-20 bg-dark-bg relative overflow-hidden"
       id="team"
     >
       
       <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-orange-primary rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-orange-primary rounded-full blur-3xl" />
+        <div className="absolute top-0 left-0 w-96 h-96 bg-primary rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary rounded-full blur-3xl" />
       </div>
 
       <div className="container-custom relative z-10">
@@ -168,9 +172,9 @@ const TeamSection = () => {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
           {/* Left side - Text */}
           <div className="max-w-xl ">
-            <span className="badge mb-4">TEAM</span>
-            <h2 className="section-title mb-4">Join our team</h2>
-            <p className="text-text-secondary text-lg leading-relaxed">
+            <span className="text-primary font-black tracking-wider text-sm">TEAM</span>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 mt-4">Join our team</h2>
+            <p className="text-text-secondary text-lg leading-relaxed ">
               Meet our dedicated coaches and trainers. Each expert brings years 
               of experience to help you achieve your fitness goals. From strength 
               training to nutrition, we've got you covered.
@@ -205,7 +209,7 @@ const TeamSection = () => {
                   key={index}
                   className="w-70 group cursor-pointer"
                >
-                  <div className="relative h-80 rounded-2xl overflow-hidden mb-4">
+                  <div className="relative h-80 overflow-hidden mb-4">
                     <img
                       src={trainer.image}
                       alt={trainer.name}
@@ -218,7 +222,7 @@ const TeamSection = () => {
                     <div className="absolute inset-0 bg-linear-to-t from-dark-bg via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
 
-                  <h3 className="text-xl font-bold text-text-primary mb-1">
+                  <h3 className="text-xl font-bold text-white mb-1">
                     {trainer.name}
                   </h3>
                   <p className="text-text-muted font-medium mb-2">
@@ -237,18 +241,17 @@ const TeamSection = () => {
            
             <div className="absolute left-0 top-0 w-32 h-full bg-linear-to-r from-dark-surface to-transparent z-20" />
             <div className="absolute right-0 top-0 w-32 h-full bg-linear-to-l from-dark-surface to-transparent z-20" />
-
             
             <div 
               ref={marqueeRef}
-              className="flex gap-6 items-center"
+              className="flex items-center"
               style={{ width: 'fit-content' }}
             >
             
               {testimonials.map((person, index) => (
                 <div
                   key={`test-1-${index}`}
-                  className="w-100 h-125 shrink-0 group relative overflow-hidden rounded-2xl"
+                  className="w-100 h-125 shrink-0 group relative overflow-hidden "
                 >
               
                   <img
@@ -274,7 +277,7 @@ const TeamSection = () => {
                       </p>
                     </div>
                   </div>
-                  <div className="absolute inset-0 border-2 border-orange-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl z-20" />
+                  <div className="absolute inset-0 border-2 border-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300  z-20" />
                 </div>
               ))}
 
@@ -305,7 +308,7 @@ const TeamSection = () => {
                     </div>
                   </div>
 
-                  <div className="absolute inset-0 border-2 border-orange-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl z-20" />
+                  <div className="absolute inset-0 border-2 border-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl z-20" />
                 </div>
               ))}
             </div>

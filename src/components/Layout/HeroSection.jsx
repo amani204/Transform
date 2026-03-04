@@ -16,6 +16,7 @@ const HeroSection = () => {
   const subtitleRef = useRef(null)
   const buttonsRef = useRef(null)
   const guaranteeRef = useRef(null)
+ 
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -44,6 +45,10 @@ const HeroSection = () => {
       )
 
 
+
+
+
+
   }, sectionRef)
 
     return () => ctx.revert()
@@ -57,7 +62,7 @@ const HeroSection = () => {
     >
       
       {/* Background Image */}
-      <div className="absolute inset-0 z-0 bg-orange-primary">
+      <div className="absolute inset-0 z-0 bg-primary">
          <img 
           src={hero}
           alt="Fitness Background" 
@@ -92,7 +97,7 @@ const HeroSection = () => {
         <div ref={buttonsRef} className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
           <Link 
             to="/exercises" 
-            className="btn-primary inline-flex items-center justify-center gap-2 group"
+            className="btn-primary inline-flex items-center justify-center gap-2 group  hover: transition-colors duration-300"
           >
             Try for Free
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -100,7 +105,7 @@ const HeroSection = () => {
           
           <a 
             href="#pricing" 
-            className="btn-secondary inline-flex items-center justify-center"
+            className="btn-secondary inline-flex items-center justify-center  hover: transition-colors duration-300"
           >
             See Pricing
           </a>
@@ -111,10 +116,11 @@ const HeroSection = () => {
           ref={guaranteeRef}
           className="flex items-center justify-center gap-2 text-text-secondary"
         >
-          <ShieldCheck className="w-5 h-5 text-orange-primary" />
+          <ShieldCheck className="w-5 h-5 text-primary" />
           <span className="text-sm font-medium">30-Day Money-Back Guarantee</span>
         </div>
       </div>
+
     </section>
   )
 }

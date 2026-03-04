@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { Users, Star, TrendingUp, Award } from 'lucide-react'
+import { Users } from 'lucide-react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -91,6 +91,10 @@ const WhyusSection = () => {
           }
         }
       )
+
+
+
+      
     }, sectionLeftRef, sectionRightRef, countersRef)
 
    
@@ -103,12 +107,12 @@ const WhyusSection = () => {
   return (
     <section id='features'
       
-      className="section-padding bg-dark-surface relative overflow-hidden"
+      className="section-padding relative overflow-hidden"
     >
       {/* Subtle Background Decoration */}
       <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-orange-primary rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-orange-primary rounded-full blur-3xl" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-primary rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary rounded-full blur-3xl" />
       </div>
 
       <div className="container-custom relative z-10">
@@ -117,7 +121,7 @@ const WhyusSection = () => {
         <div  className="grid md:grid-cols-2 gap-12 mb-16">
           {/* Left Paragraph */}
           <div ref={sectionLeftRef} className="text-left">
-            <h3 className="text-2xl font-bold text-text-primary mb-4">
+            <h3 className="text-2xl font-bold text-white mb-4">
               Beyond the Workout
             </h3>
             <p className="text-text-secondary text-lg leading-relaxed">
@@ -134,7 +138,7 @@ const WhyusSection = () => {
           <div   className="grid md:grid-cols-2 gap-12 mb-16">
           <div className='hidden md:block'></div>
           <div ref={sectionRightRef} className="text-left">
-            <h3 className="text-2xl font-bold text-text-primary mb-4">
+            <h3 className="text-2xl font-bold text-white mb-4">
               Proven Results
             </h3>
             <p className="text-text-secondary text-lg leading-relaxed">
@@ -153,9 +157,9 @@ const WhyusSection = () => {
         >
           {/* Counter 1: Members Transformed */}
           <div className="text-center">
-            <div className="text-5xl md:text-6xl font-black text-text-primary mb-2 flex items-center justify-center gap-1">
+            <div className="text-5xl md:text-6xl font-black text-white mb-2 flex items-center justify-center gap-1">
               <span className="member-counter">0</span>
-              <span className="text-text-primary">+</span>
+              <span>+</span>
             </div>
             <p className="text-text-secondary font-medium mb-1">Members Transformed</p>
             <p className="text-text-muted text-sm">From first-timers to competitive athletes</p>
@@ -163,7 +167,7 @@ const WhyusSection = () => {
 
           {/* Counter 2: Retention Rate */}
           <div className="text-center">
-            <div className="text-5xl md:text-6xl font-black text-text-primary mb-2 flex items-center justify-center gap-1">
+            <div className="text-5xl md:text-6xl font-black text-white mb-2 flex items-center justify-center gap-1">
               <span className="retention-counter">0</span>
               
             </div>
@@ -173,9 +177,10 @@ const WhyusSection = () => {
 
           {/* Counter 3: Google Rating */}
           <div className="text-center">
-            <div className="text-5xl md:text-6xl font-black text-text-primary mb-2 flex items-center justify-center gap-1">
+            <div className="text-5xl md:text-6xl font-black text-white mb-2 flex items-center justify-center gap-1">
               <span className="feedback-counter">0</span>
-              <Star className="w-10 h-10 text-yellow-400 fill-yellow-400" />
+             <span>★</span> 
+            
             </div>
             <p className="text-text-secondary font-medium mb-1">Google Rating</p>
             <p className="text-text-muted text-sm">From 300+ verified member reviews</p>
@@ -183,9 +188,10 @@ const WhyusSection = () => {
 
           {/* Counter 4: Faster Progress */}
           <div className="text-center">
-            <div className="text-5xl md:text-6xl font-black text-text-primary mb-2 flex items-center justify-center gap-1">
+            <div className="text-5xl md:text-6xl font-black text-white mb-2 flex items-center justify-center gap-1">
               <span className="progress-counter">0</span>
-              <TrendingUp className="w-8 h-8 text-orange-primary" />
+              <span>x</span>
+              
             </div>
             <p className="text-text-secondary font-medium mb-1">Faster Results</p>
             <p className="text-text-muted text-sm">vs working out alone</p>
@@ -193,11 +199,11 @@ const WhyusSection = () => {
         </div>
 
         {/* Member Count Badge */}
-        <div className="text-center mt-10">
-          <div className="inline-flex items-center gap-3 bg-dark-card px-6 py-3 rounded-full border border-orange-primary/20">
-            <Users className="w-5 h-5 text-orange-primary" />
+        <div className="text-center mt-10 text-white">
+          <div className="inline-flex items-center gap-3 bg-dark-card px-6 py-3 rounded-full border border-primary/20">
+            <Users className="w-5 h-5 text-primary" />
             <span className="text-text-primary font-medium">
-              Join <span className="text-orange-primary font-bold">1,500+</span> members transforming their lives
+              Join <span className="text-primary font-bold">1,500+</span> members transforming their lives
             </span>
           </div>
         </div>
