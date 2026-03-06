@@ -29,8 +29,8 @@ const FAQSection = () => {
       answer: 'Yes, all our programs include nutrition guidance. You\'ll get personalized meal plans, grocery lists, and ongoing support to help you make sustainable dietary changes that complement your training.'
     },
     {
-      question: 'Can I cancel or pause my plan anytime?',
-      answer: 'Absolutely! We offer flexible plans that you can pause or cancel at any time with no hidden fees. Just give us 7 days notice before your next billing cycle.'
+      question: 'Can I access the workout library without a membership?',
+      answer: 'Yes, our entire exercise library is completely free to access — no membership required.'
     },
     {
       question: 'How long will it take to see results?',
@@ -38,7 +38,6 @@ const FAQSection = () => {
     }
   ]
 
-  // GSAP Animations
   useEffect(() => {
     const ctx = gsap.context(() => {
       
@@ -70,7 +69,7 @@ const FAQSection = () => {
           opacity: 1,
           x: 0,
           duration: 0.8,
-          stagger: 0.15,
+          stagger: 0.15, // Each item 0.15s apart
           ease: 'power3.out',
           scrollTrigger: {
             trigger: sectionRef.current,
@@ -128,7 +127,7 @@ const FAQSection = () => {
             </div>
           </div>
 
-          {/* RIGHT COLUMN - FAQ Accordion */}
+          {/* FAQ Accordion */}
           <div className="space-y-0">
             {faqs.map((faq, index) => (
               <div
@@ -155,7 +154,7 @@ const FAQSection = () => {
                   </div>
                 </button>
 
-                {/* Answer (with animation) */}
+                {/* Answer */}
                 <div 
                   className={`transition-all duration-300 overflow-hidden ${
                     openIndex === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'

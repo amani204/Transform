@@ -11,7 +11,7 @@ const PricingSection = () => {
   const sectionRef = useRef(null)
   const cardsRef = useRef([])
 
-  // GSAP Animations
+
   useEffect(() => {
     const ctx = gsap.context(() => {
       
@@ -62,26 +62,27 @@ const PricingSection = () => {
       period: '/mo',
       description: 'Perfect for beginners looking to build consistency and confidence.',
       features: [
-        '8 sessions / month (2x per week)',
-        'Personalized onboarding & goal assessment',
-        'Access to open gym hours',
-        'Movement & technique coaching',
-        'Progress tracking every 4 weeks'
+        '8 training sessions / month',
+        'Gym access',
+        'Progress tracking',
+        'Technique coaching',
+        
       ],
       cta: 'Get Started',
       popular: false,
       borderColor: 'border border-white/20',
     },
     {
-      name: 'Elite',
-      price: 329,
+      name: 'Pro',
+      price: 189,
       period: '/mo',
-      description: 'Gentle, structured recovery for new mothers to help them get confidence and balance again.',
+      description: 'Gentle, structured recovery to get confidence and balance again.',
       features: [
-        'Tailored postpartum training plan',
-        'Nutrition & recovery coaching',
-        'Weekly 1-on-1 check-ins',
-        'Ongoing support between sessions'
+        '12 training sessions',
+        'Personalized workout program',
+        'Nutrition guidance',
+        'PMonthly progress reviews',
+        'Priority class booking'
       ],
       cta: 'Get Started',
       popular: true,
@@ -89,15 +90,16 @@ const PricingSection = () => {
       badge: 'Most Popular'
     },
     {
-      name: 'Core',
-      price: 449,
+      name: 'Elite',
+      price: 329,
       period: '/mo',
-      description: 'Workouts + nutrition designed around your cycle, energy, and hormonal needs',
+      description: 'Workouts + nutrition designed ',
       features: [
-        'Custom periodized training cycles',
-        'Ready made cooked meals',
-        'Bi-weekly performance reviews',
-        'Priority messaging access'
+        'Unlimited sessions',
+        'Fully personalized training plan',
+        'Nutrition coaching',
+        'Weekly 1-on-1 coaching',
+        'Priority support'
       ],
       cta: 'Get Started',
       popular: false,
@@ -127,7 +129,7 @@ const PricingSection = () => {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4  mt-12">
           {programs.map((program, index) => {
             return (
               <div

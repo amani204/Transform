@@ -22,6 +22,7 @@ import person6Img from '../../assets/testimonials/person6Img.jpg'
 const TeamSection = () => {
   const marqueeRef = useRef(null)
   const sectionRef = useRef(null)
+  const headerRef = useRef(null)
 
   const trainers = [
     {
@@ -109,22 +110,38 @@ const TeamSection = () => {
     },
     
   ]
-
+ // Header children animation  + Marquee infinite loop 
   useEffect(() => {
     const ctx = gsap.context(() => {
       const marquee = marqueeRef.current
-      const marqueeWidth = marquee.scrollWidth / 2 
-      
-
+      const marqueeWidth = marquee.scrollWidth / 2 // Half because we duplicate
+      //Why duplicate? So when the first set moves out, the duplicate is already there to replace it.
+     
+       gsap.fromTo(
+        headerRef.current.children,
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.15,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: headerRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none none',
+          },
+        }
+      )
 
       
       gsap.to(marquee, {
-        x: -marqueeWidth,
-        duration: 50,
-        ease: 'none',
-        repeat: -1,
+        x: -marqueeWidth,  // Move left by half the width
+        duration: 50,  // Takes 50 seconds for one loop
+        ease: 'none', // Constant speed (no easing)
+        repeat: -1, // Loop forever
         modifiers: {
-          x: gsap.utils.unitize(x => parseFloat(x) % marqueeWidth)
+          x: gsap.utils.unitize(x => parseFloat(x) % marqueeWidth)  // Reset position
         }
       })
       
@@ -133,7 +150,7 @@ const TeamSection = () => {
     return () => ctx.revert()
   }, [])
 
-
+ //Section fade in 
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.fromTo(sectionRef.current,
@@ -169,7 +186,7 @@ const TeamSection = () => {
       <div className="container-custom relative z-10">
         
         
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+        <div ref={headerRef} className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
           {/* Left side - Text */}
           <div className="max-w-xl ">
             <span className="text-primary font-black tracking-wider text-sm">TEAM</span>
@@ -181,7 +198,7 @@ const TeamSection = () => {
             </p>
           </div>
 
-          {/* Right side - Buttons */}
+          {/* Buttons */}
           <div className="flex gap-4">
             <Link to="/pricing" className="btn-primary inline-flex items-center gap-2">
               Join Us <ArrowRight className="w-4 h-4" />
@@ -193,15 +210,13 @@ const TeamSection = () => {
         </div>
 
         {/* ===== SCROLLABLE TRAINER CARDS ===== */}
-        <div className="mb-16">
+        <div className="mb-12">
          
           <div className="flex justify-end mb-4">
             <span className="text-sm text-text-muted flex items-center gap-2">
               <Users className="w-4 h-4" /> Scroll for more trainers →
             </span>
           </div>
-
-       =
           <div className="overflow-x-auto scrollbar-hide pb-4 -mx-4 px-4">
             <div className="flex gap-6 w-max">
               {trainers.map((trainer, index) => (
@@ -284,7 +299,7 @@ const TeamSection = () => {
               {testimonials.map((person, index) => (
                 <div
                   key={`test-2-${index}`}
-                  className="w-100 h-125 shrink-0 group relative overflow-hidden rounded-2xl"
+                  className="w-100 h-125 shrink-0 group relative overflow-hidden "
                 >
                   <img
                     src={person.image}
@@ -308,7 +323,7 @@ const TeamSection = () => {
                     </div>
                   </div>
 
-                  <div className="absolute inset-0 border-2 border-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl z-20" />
+                  <div className="absolute inset-0 border-2 border-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20" />
                 </div>
               ))}
             </div>

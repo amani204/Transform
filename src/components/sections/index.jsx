@@ -1,0 +1,5 @@
+export { default as Hero } from './HeroSection'
+export { default as Programs } from './ProgramsSection'
+export { default as Team } from './TeamSection'
+export { default as CTA } from './CTASection'
+export { default as FAQ } from './FAQSection'
