@@ -26,6 +26,7 @@ const Navbar = () => {
     { name: 'FAQ', href: '#faq' },
     { name: 'Contact', href: '/contact' },
   ]
+  
 
   useEffect(() => {
     const ctx = gsap.context(() => {

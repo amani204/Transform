@@ -45,10 +45,7 @@ body {
 /* Custom components */
 @layer components {
   /* Buttons */
-
-
 .btn-primary {
-
   background: var(--color-primary);
   padding: 12px 40px;
   border: none;
@@ -56,44 +53,52 @@ body {
   font-weight: bold;
   font-size: 16px;
   cursor: pointer;
-  transform: skewX(-20deg); 
+  transform: skewX(-20deg);
   margin: 20px;
   position: relative;
+  display: inline-block;
+  transition: all 0.3s ease;
 }
 
-  }
-  .btn-primary:hover {
-    background-color: black;
-    color: white;
-    box-shadow: 0 10px 15px -3px rgb(109, 123, 47);
-    border: 2px solid var(--color-primary) ;
-  }
+.btn-primary span {
+  display: inline-block;
+  transform: skewX(20deg);
+}
 
-  .btn-secondary {
-    padding: 12px 40px;
-    margin: 20px;
-    position: relative;
-    transform: skewX(-20deg); 
-    font-weight: bold;
-    transition: all 0.3s;
-    border: 2px solid white;
-    color:white;
-    background-color: black;
-  }
-  .btn-secondary:hover {
-  background-color: white;
-  color:black;
-  box-shadow: 0 10px 15px -3px rgb(135, 138, 128);
-  }
+.btn-primary:hover {
+  background-color: black;
+  color: white;
+  box-shadow: 0 10px 15px -3px rgb(109, 123, 47);
+  border: 2px solid var(--color-primary);
+}
 
-  .btn-ex {
-  background: var(--color-primary);
-  border: none;
-  color: black;
-  cursor: pointer;
-  transform: skewX(-20deg); 
+.btn-secondary {
+  padding: 12px 40px;
   margin: 20px;
   position: relative;
+  transform: skewX(-20deg);
+  display: inline-block;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  border: 2px solid white;
+  color: white;
+  background-color: black;
+}
+
+.btn-secondary span {
+  display: inline-block;
+  transform: skewX(20deg);
+}
+
+.btn-secondary:hover {
+  background-color: white;
+  color: black;
+  box-shadow: 0 10px 15px -3px rgb(135, 138, 128);
+}
+
+.btn-primary.no-hover:hover {
+  all: unset;
+  cursor: pointer;
 }
   /* Cards */
   .card {
@@ -164,7 +169,7 @@ body {
     padding-inline: 1rem;
   }
 
-
+}
   @media (min-width: 768px) {
     .section-padding {
       padding-block: 6rem;

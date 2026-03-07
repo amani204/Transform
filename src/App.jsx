@@ -1,8 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import Contact from './pages/Contact'
-import { Footer, Navbar } from './components/Layout'
 import WorkoutLibraryPage from './pages/WorkoutLibraryPage'
+import { Footer, Navbar } from './components/Layout'
+
 
 function App() {
   return (

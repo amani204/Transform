@@ -91,9 +91,9 @@ const CTASection = () => {
           <Link
             to="/workoutLibrary"
             className="btn-primary inline-flex items-center gap-2 mx-auto group"
-          >
-            Explore Workouts
+          ><span>Explore Workouts</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            
           </Link>
         </div>
       </div>

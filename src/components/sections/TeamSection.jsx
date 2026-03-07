@@ -172,7 +172,6 @@ const TeamSection = () => {
 
   return (
     <section 
-    
       ref={sectionRef}
       className="py-20 bg-dark-bg relative overflow-hidden"
       id="team"
@@ -187,7 +186,7 @@ const TeamSection = () => {
         
         
         <div ref={headerRef} className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
-          {/* Left side - Text */}
+          {/* Text */}
           <div className="max-w-xl ">
             <span className="text-primary font-black tracking-wider text-sm">TEAM</span>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 mt-4">Join our team</h2>
@@ -200,13 +199,21 @@ const TeamSection = () => {
 
           {/* Buttons */}
           <div className="flex gap-4">
-            <Link to="/pricing" className="btn-primary inline-flex items-center gap-2">
-              Join Us <ArrowRight className="w-4 h-4" />
-            </Link>
-            <Link to="/about" className="btn-secondary">
-              About Us
-            </Link>
-          </div>
+  <a 
+    href="#pricing" 
+    onClick={(e) => {
+      e.preventDefault()
+      const pricingSection = document.querySelector('#pricing')
+      if (pricingSection) {
+        pricingSection.scrollIntoView({ behavior: 'smooth' })
+      }
+    }}
+    className="btn-primary inline-flex items-center gap-2"
+  >
+    <span>Join Us</span> 
+    <ArrowRight className="w-4 h-4" />
+  </a>
+</div>
         </div>
 
         {/* ===== SCROLLABLE TRAINER CARDS ===== */}

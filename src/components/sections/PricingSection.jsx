@@ -187,8 +187,9 @@ const PricingSection = () => {
                     transition-all duration-300 flex items-center justify-center gap-2  ${
                   program.popular ? 'btn-primary' : 'btn-secondary' }`}
                 >
-                {program.cta}
+                  <span>{program.cta}</span>
                   <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  
                 </button>
               </div>
             )

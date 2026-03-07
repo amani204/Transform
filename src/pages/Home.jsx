@@ -1,4 +1,4 @@
-import { Hero, Programs, Team, CTA, FAQ } from '../components/sections'
+import { Hero, Programs, Team, CTA, FAQ, Pricing } from '../components/sections'
 
 const Home = () => {
   return (
@@ -6,6 +6,7 @@ const Home = () => {
       <Hero />
       <Programs />
       <Team />
+      <Pricing/>
       <CTA />
       <FAQ />
     </main>

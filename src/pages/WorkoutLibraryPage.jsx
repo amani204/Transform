@@ -1,190 +1,292 @@
-import { useState, useEffect, useRef, useMemo } from 'react'
+
+import { useState, useEffect, useRef } from 'react'
 import gsap from 'gsap'
-import { Dumbbell } from 'lucide-react'
+import { Dumbbell, AlertCircle } from 'lucide-react'
+import { useExercises }  from '../hooks/useExercises'
 
+import { Card, Modal, Filter, Pagination, Skeleton } from '../components/workoutLibrary'
 
-import {
-  MOCK_EXERCISES,
-  BODY_PARTS,
-  EQUIPMENT_LIST,
-  TARGET_MUSCLES,
-} from '../services/mockData'
-import SkeletonCard from '../components/WorkoutLibrary/SkeletonCard'
-import ExerciseCard from '../components/WorkoutLibrary/ExerciseCard'
-import FilterBar from '../components/WorkoutLibrary/FilterBar'
-import ExerciseModal from '../components/WorkoutLibrary/ExerciseModal'
+import {EQUIPMENT_LIST, BODY_PARTS, TARGET_MUSCLES} from '../services/mockData'
+
+// ── SKELETON LOADING CARD ─────────────────────────────────────────
+// Shows a shimmering placeholder while exercises are loading.
+// Matches the exact dimensions of a real ExerciseCard for seamless transition.
+const SkeletonCard = () => (
+  <div className="overflow-hidden animate-pulse"
+    style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
+    <div style={{ height: '220px', background: 'rgba(255,255,255,0.06)' }} />
+    <div className="p-5 space-y-3">
+      <div className="h-3.5 rounded-sm" style={{ background: 'rgba(255,255,255,0.07)', width: '65%' }} />
+      <div className="flex justify-between">
+        <div className="h-2.5 rounded-sm" style={{ background: 'rgba(255,255,255,0.05)', width: '28%' }} />
+        <div className="h-2.5 rounded-sm" style={{ background: 'rgba(255,255,255,0.05)', width: '22%' }} />
+      </div>
+    </div>
+  </div>
+)
 
 const WorkoutLibraryPage = () => {
-  const [filterType, setFilterType] = useState('bodyPart')
-  const [activeFilter, setActiveFilter] = useState('all')
-  const [searchQuery, setSearchQuery] = useState('')
   const [selectedExercise, setSelectedExercise] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
-  
-  const gridRef = useRef(null)
-  const cardRefs = useRef([])
 
-  // Simulate loading
+  // ── CUSTOM HOOK ────────────────────────────────────────────────
+  // useExercises manages all exercise data, filters, pagination, and API fallback.
+  // usingMock indicates if we're in demo mode (API limit reached).
+  const {
+    exercises, isLoading, error, usingMock,
+    page, setPage, hasMore, LIMIT,
+    filterType, activeFilter, searchQuery, filterOptions,
+    changeFilter, changeFilterType, changeSearch,
+  } = useExercises()
+
+  // ── REFS ───────────────────────────────────────────────────────
+  const heroRef  = useRef(null)  // For GSAP hero animation
+  const gridRef  = useRef(null)  // For scrolling to top on page change
+  const cardRefs = useRef([])    // Array of refs for staggered card animations
+
+  // ── GSAP HERO ANIMATION ────────────────────────────────────────
+  // Animates the hero section elements when page loads.
   useEffect(() => {
-    setIsLoading(true)
-    const timer = setTimeout(() => setIsLoading(false), 800)
-    return () => clearTimeout(timer)
-  }, [activeFilter, filterType, searchQuery])
+    if (!heroRef.current) return
+    const ctx = gsap.context(() => {
+      gsap.fromTo(heroRef.current.children,
+        { y: 40, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, stagger: 0.12, ease: 'power3.out' }
+      )
+    }, heroRef)
+    return () => ctx.revert()
+  }, [])
 
-  // GSAP animation
+  // ── STAGGERED CARD ANIMATION ───────────────────────────────────
+  // When new exercises load, cards animate in one after another.
+  // Creates a smooth "waterfall" effect as cards appear.
   useEffect(() => {
     if (isLoading) return
-    const validCards = cardRefs.current.filter(Boolean)
-    if (!validCards.length) return
-
-    gsap.fromTo(validCards,
-      { y: 30, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.5, stagger: 0.07, ease: 'power3.out', delay: 0.1 }
+    const valid = cardRefs.current.filter(Boolean)
+    if (!valid.length) return
+    cardRefs.current = [] // Reset refs for next batch
+    gsap.fromTo(valid,
+      { y: 28, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.45, stagger: 0.06, ease: 'power3.out', delay: 0.05 }
     )
-  }, [isLoading])
+  }, [isLoading, exercises])
 
-  // Filter options based on type
-  const filterOptions = useMemo(() => {
-    const options = {
-      bodyPart: BODY_PARTS,
-      equipment: EQUIPMENT_LIST,
-      target: TARGET_MUSCLES
+  // ── SCROLL TO TOP ON PAGE CHANGE ───────────────────────────────
+  // When user changes page, scroll back to top of grid for better UX.
+  useEffect(() => {
+    if (gridRef.current) {
+      gridRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
-    return options[filterType] || []
-  }, [filterType])
+  }, [page])
 
-  // Filter and search exercises
-  const filteredExercises = useMemo(() => {
-    let results = MOCK_EXERCISES
-
-    if (activeFilter !== 'all') {
-      results = results.filter(ex => ex[filterType] === activeFilter)
-    }
-
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase()
-      results = results.filter(ex => 
-        [ex.name, ex.target, ex.bodyPart, ex.equipment].some(field => 
-          field.toLowerCase().includes(query)
-        )
-      )
-    }
-
-    return results
-  }, [activeFilter, filterType, searchQuery])
-
-  const stats = [
-    { label: 'Exercises', value: MOCK_EXERCISES.length + '+' },
-    { label: 'Body Parts', value: BODY_PARTS.length - 1 },
-    { label: 'Equipment', value: EQUIPMENT_LIST.length - 1 },
-    { label: 'Muscle Groups', value: TARGET_MUSCLES.length - 1 },
-  ]
+  const resultCount = exercises.length
+  const hasActiveFilters = activeFilter !== 'all' || searchQuery.trim() !== ''
 
   return (
     <div className="min-h-screen bg-dark-bg">
-      {/* Hero Section */}
-      <div className="py-42 pb-12 px-6 relative overflow-hidden border-b border-white/10">
-        <div className="container-custom relative z-10">
-          <span className="block text-primary font-black tracking-[0.2em] text-xs uppercase mb-4">
+
+      {/* ── HERO SECTION ─────────────────────────────────────────── */}
+      <div className="pt-40 pb-12 px-6 overflow-hidden border-b border-white/10 relative">
+        {/* Background glow effects */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-0 left-0 w-96 h-96 bg-primary rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary rounded-full blur-3xl" />
+        </div>
+
+        <div ref={heroRef} className="container-custom relative z-10">
+          <span className="block text-primary font-black tracking-[0.25em] text-xs uppercase mb-3" style={{ opacity: 0 }}>
             Workout Library
           </span>
-          <h1 className="text-5xl md:text-6xl font-bold text-white leading-tight mb-4">
+          <h1 className="text-5xl md:text-6xl font-bold text-white leading-tight mb-3"
+            style={{ fontFamily: 'Georgia, serif', opacity: 0 }}>
             Find Your Exercise
           </h1>
-          <p className="text-white/50 text-lg max-w-xl">
-            Browse {MOCK_EXERCISES.length}+ exercises by muscle group, equipment, or name.
+          
+          {/* ── DYNAMIC DESCRIPTION ───────────────────────────────── */}
+          {/* Changes based on API mode: real data vs mock fallback */}
+          <p className="text-white/40 text-lg max-w-lg" style={{ opacity: 0 }}>
+            {usingMock
+              ? 'Sample exercises shown — API limit reached. Full library retries in 60 min.'
+              : `${BODY_PARTS.length - 1} body parts, ${EQUIPMENT_LIST.length - 1} equipment types — powered by ExerciseDB.`
+            }
           </p>
 
-          {/* Stats */}
-          <div className="flex flex-wrap gap-8 mt-8">
-            {stats.map(stat => (
-              <div key={stat.label}>
-                <div className="text-2xl font-black text-white">{stat.value}</div>
-                <div className="text-xs text-white/30 uppercase tracking-widest mt-0.5">{stat.label}</div>
+          {/* ── STATS GRID ────────────────────────────────────────── */}
+          {/* Shows counts with visual feedback for mock mode */}
+          <div className="flex flex-wrap gap-8 mt-8" style={{ opacity: 0 }}>
+            {[
+              {
+                label: 'Exercises',
+                value: isLoading
+                  ? '...'
+                  : usingMock
+                  ? '28 samples'
+                  : '1,300+',
+              },
+              {
+                label: 'Body Parts',
+                value: BODY_PARTS.length - 1,
+              },
+              {
+                label: 'Equipment',
+                value: `${EQUIPMENT_LIST.length - 1}+`,
+              },
+              {
+                label: 'Muscle Groups',
+                value: `${TARGET_MUSCLES.length - 1}+`,
+              },
+            ].map(s => (
+              <div key={s.label}>
+                <div className={`text-2xl font-black transition-colors duration-500 ${
+                  usingMock ? 'text-white/40' : 'text-white'
+                }`}>
+                  {s.value}
+                </div>
+                <div className="text-xs text-white/25 uppercase tracking-widest mt-0.5">
+                  {s.label}
+                </div>
               </div>
             ))}
+          </div>
+
+          {/* ── LIVE/STATUS INDICATOR ─────────────────────────────── */}
+          {/* Green pulsing dot when using real API, red dot for mock mode */}
+          <div className="flex items-center gap-2 mt-6" style={{ opacity: 0 }}>
+            <div className={`w-1.5 h-1.5 rounded-full ${usingMock ? 'bg-red-700' : 'bg-green-400'}`}
+              style={!usingMock ? { boxShadow: '0 0 6px #4ade80', animation: 'pulse 2s infinite' } : {}} />
+            <span className="text-xs uppercase tracking-widest"
+              style={{ color: usingMock ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.35)' }}>
+              {usingMock ? 'Offline — sample mode' : 'Live — ExerciseDB'}
+            </span>
           </div>
         </div>
       </div>
 
-      {/* Filter Bar */}
-      <FilterBar
-        activeFilter={activeFilter}
-        setActiveFilter={setActiveFilter}
+      {/* ── FILTER BAR ───────────────────────────────────────────── */}
+      <Filter
         filterType={filterType}
-        setFilterType={setFilterType}
-        filters={filterOptions}
+        changeFilterType={changeFilterType}
+        activeFilter={activeFilter}
+        changeFilter={changeFilter}
+        filterOptions={filterOptions}
         searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
+        changeSearch={changeSearch}
       />
 
-      {/* Main Content */}
-      <div className="container-custom px-6 py-12" ref={gridRef}>
-        {!isLoading && (
-          <div className="flex items-center justify-between mb-8">
-            <p className="text-white/30 text-sm uppercase tracking-widest">
-              {filteredExercises.length === 0
-                ? 'No results'
-                : `${filteredExercises.length} exercise${filteredExercises.length !== 1 ? 's' : ''}`
-              }
+      {/* ── MOCK MODE BANNER ─────────────────────────────────────── */}
+      {/* Shows when API rate limit is reached - informs user */}
+      {usingMock && (
+        <div className="flex items-center justify-center gap-2 py-2 text-xs uppercase tracking-widest"
+          style={{ background: 'rgba(255,100,0,0.08)', borderBottom: '1px solid rgba(255,100,0,0.15)', color: 'rgba(255,100,0,0.6)' }}>
+          <span>Showing sample data — API limit reached. Will retry in 60 min.</span>
+        </div>
+      )}
+
+      {/* ── MAIN CONTENT ─────────────────────────────────────────── */}
+      <div ref={gridRef} className="container-custom px-6 py-10">
+
+        {/* ── RESULT META & CLEAR BUTTON ─────────────────────────── */}
+        <div className="flex items-center justify-between mb-7">
+          {!isLoading && !error && (
+            <p className="text-white/25 text-xs uppercase tracking-widest">
+              {resultCount === 0 ? 'No results' : `${resultCount} exercises · page ${page}`}
             </p>
-            {(activeFilter !== 'all' || searchQuery) && (
+          )}
+          
+          {/* Filter status chips and clear button */}
+          <div className="flex items-center gap-3 ml-auto">
+            {/* Active filter pill (e.g., "chest") */}
+            {activeFilter !== 'all' && (
+              <div className="text-xs bg-primary/20 text-primary px-2 py-1 rounded-sm uppercase tracking-wider">
+                {activeFilter}
+              </div>
+            )}
+            
+            {/* Active search query pill */}
+            {searchQuery && (
+              <div className="text-xs bg-white/10 text-white/80 px-2 py-1 rounded-sm">
+                "{searchQuery}"
+              </div>
+            )}
+            
+            {/* Clear button - only shows when filters/search active */}
+            {hasActiveFilters && (
               <button
-                onClick={() => { setActiveFilter('all'); setSearchQuery('') }}
-                className="text-xs text-white/30 hover:text-primary transition-colors uppercase tracking-widest"
+                onClick={() => { 
+                  console.log('🧹 Clear button clicked');
+                  changeFilter('all'); 
+                  changeSearch('');
+                  if (page !== 1) setPage(1);
+                }}
+                className="text-xs text-white/60 hover:text-primary transition-colors uppercase tracking-widest bg-white/10 px-3 py-1.5 rounded-sm border border-white/20 hover:border-primary/50"
               >
-                Clear filters ✕
+                Clear ✕
               </button>
             )}
           </div>
-        )}
+        </div>
 
-        {/* Loading State */}
-        {isLoading && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {[...Array(8)].map((_, i) => <SkeletonCard key={i} />)}
+        {/* ── ERROR STATE ────────────────────────────────────────── */}
+        {error && (
+          <div className="flex flex-col items-center justify-center py-28 text-center gap-4">
+            <AlertCircle className="w-10 h-10 text-red-400/40" />
+            <h3 className="text-white/40 text-lg font-bold">Something went wrong</h3>
+            <p className="text-white/25 text-sm max-w-xs">{error}</p>
+            <button
+              onClick={() => { changeFilter('all'); changeSearch(''); }}
+              className="mt-2 px-6 py-2.5 text-xs font-black uppercase tracking-widest text-primary/60 hover:text-primary transition-colors"
+              style={{ border: '1px solid rgba(255,100,0,0.3)' }}
+            >
+              Reset
+            </button>
           </div>
         )}
 
-        {/* Empty State */}
-        {!isLoading && filteredExercises.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-32 text-center">
-            <Dumbbell className="w-12 h-12 text-white/10 mb-4" />
-            <h3 className="text-white/30 text-xl font-bold mb-2">No exercises found</h3>
+        {/* ── LOADING STATE ──────────────────────────────────────── */}
+        {isLoading && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {Array.from({ length: LIMIT }).map((_, i) => <Skeleton key={i} />)}
+          </div>
+        )}
+
+        {/* ── EMPTY STATE ────────────────────────────────────────── */}
+        {!isLoading && !error && resultCount === 0 && (
+          <div className="flex flex-col items-center justify-center py-28 text-center gap-3">
+            <Dumbbell className="w-10 h-10 text-white/10" />
+            <h3 className="text-white/30 text-lg font-bold">No exercises found</h3>
             <p className="text-white/20 text-sm">Try a different filter or search term</p>
           </div>
         )}
 
-        {/* Exercise Grid */}
-        {!isLoading && filteredExercises.length > 0 && (
+        {/* ── EXERCISE GRID ──────────────────────────────────────── */}
+        {!isLoading && !error && resultCount > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {filteredExercises.map((exercise, i) => (
-              <ExerciseCard
-                key={exercise.id}
-                exercise={exercise}
+            {exercises.map((ex, i) => (
+              <Card
+                key={ex.id}
+                exercise={ex}
                 onClick={setSelectedExercise}
-                animRef={el => cardRefs.current[i] = el}
+                animRef={el => { cardRefs.current[i] = el }}
+                usingMock={usingMock} // Pass down to show/hide sample badges
               />
             ))}
           </div>
         )}
 
-        {/* Load More */}
-        {!isLoading && filteredExercises.length > 0 && (
-          <div className="text-center mt-16">
-            <button className="px-10 py-4 font-black uppercase tracking-widest text-sm text-white/40 border border-white/10 hover:text-white transition-colors">
-              Load More
-            </button>
-            <p className="text-white/20 text-xs mt-3 uppercase tracking-widest">
-              Showing {filteredExercises.length} results
-            </p>
-          </div>
+        {/* ── PAGINATION CONTROLS ────────────────────────────────── */}
+        {!error && (
+          <Pagination
+            page={page}
+            hasMore={hasMore}
+            isLoading={isLoading}
+            onPrev={() => setPage(page - 1)}
+            onNext={() => setPage(page + 1)}
+          />
         )}
       </div>
 
-      {/* Modal */}
+      {/* ── EXERCISE DETAIL MODAL ────────────────────────────────── */}
       {selectedExercise && (
-        <ExerciseModal
+        <Modal
           exercise={selectedExercise}
           onClose={() => setSelectedExercise(null)}
         />

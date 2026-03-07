@@ -145,8 +145,8 @@ const ProgramsSection = () => {
 
         {/* Bottom CTA */}
         <div className="text-center mt-12">
-          <Link to="/programs" className="btn-primary inline-flex items-center gap-2">
-            View All Programs
+          <Link  className="btn-primary inline-flex items-center gap-2">
+            <span>View All Programs</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>

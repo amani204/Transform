@@ -1,85 +1,101 @@
 import { useRef, useEffect } from 'react'
 import gsap from 'gsap'
+import { Search, X } from 'lucide-react'
 
-const FilterBar = ({ activeFilter, setActiveFilter, filterType, setFilterType, filters, searchQuery, setSearchQuery }) => {
+const TABS = [
+  { label: 'Body Part', value: 'bodyPart' },
+  { label: 'Equipment', value: 'equipment' },
+  { label: 'Muscle',    value: 'target'    },
+]
+
+const FilterBar = ({
+  filterType, changeFilterType,
+  activeFilter, changeFilter,
+  filterOptions,
+  searchQuery, changeSearch,
+}) => {
   const barRef = useRef(null)
 
   useEffect(() => {
     gsap.fromTo(barRef.current,
-      { y: -20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out', delay: 0.3 }
+      { y: -16, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out', delay: 0.2 }
     )
   }, [])
 
-  const tabs = [
-    { label: 'Body Part', value: 'bodyPart' },
-    { label: 'Equipment', value: 'equipment' },
-    { label: 'Muscle', value: 'target' },
-  ]
-
-  const getTabStyle = (isActive) => ({
-    background: isActive ? 'var(--color-primary)' : 'transparent',
-    color: isActive ? '#000' : 'rgba(255,255,255,0.4)',
-    border: 'none'
-  })
-
-  const getPillStyle = (isActive) => ({
-    background: isActive ? 'var(--color-primary)' : 'transparent',
-    color: isActive ? '#000' : 'rgba(255,255,255,0.4)',
-    border: '1px solid rgba(255,255,255,0.1)'
-  })
-
   return (
-    <div ref={barRef} className="py-5 bg-black">
+    <div
+      ref={barRef}
+      className="sticky top-0 z-30 py-4"
+      style={{
+        background: 'rgba(8,8,8,0.97)',
+        backdropFilter: 'blur(12px)',
+        borderBottom: '1px solid rgba(255,255,255,0.06)',
+      }}
+    >
       <div className="container-custom px-6">
 
-        {/* Top row */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+        {/* type tabs + search */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
 
-          {/* Tabs */}
-          <div className="flex gap-1 p-1 border border-white/10 bg-white/5">
-            {tabs.map(tab => (
+          {/* Tab toggle */}
+          <div className="flex gap-1 p-1"
+            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+            {TABS.map(tab => (
               <button
                 key={tab.value}
-                onClick={() => { setFilterType(tab.value); setActiveFilter('all') }}
-                className="px-4 py-2 text-xs font-black uppercase transition-all duration-200"
-                style={getTabStyle(filterType === tab.value)}
+                onClick={() => {
+                  changeFilterType(tab.value);
+                }}
+                className="px-4 py-1.5 text-xs font-black uppercase tracking-widest transition-all duration-200"
+                style={{
+                  background: filterType === tab.value ? 'var(--color-primary)' : 'transparent',
+                  color:      filterType === tab.value ? '#000'    : 'rgba(255,255,255,0.35)',
+                }}
               >
                 {tab.label}
               </button>
             ))}
           </div>
 
-          {/* Search */}
-          <div className="relative flex-1 max-w-xs">
+          {/* Search input */}
+          <div className="relative w-full sm:max-w-xs">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5"
+              style={{ color: 'rgba(255,255,255,0.25)' }} />
             <input
               type="text"
-              placeholder="Search exercises..."
               value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              className="w-full bg-transparent text-white text-sm py-2.5 px-4 outline-none border border-primary/20 placeholder-white/20"
+              onChange={e => changeSearch(e.target.value)}
+              placeholder="Search exercises..."
+              className="w-full bg-transparent text-white text-sm py-2 pl-9 pr-8 outline-none placeholder-white/20 border border-primary"
             />
             {searchQuery && (
               <button
-                onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/70 text-xs"
+                onClick={() => changeSearch('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/70"
               >
-                ✕
+                <X className="w-3.5 h-3.5" />
               </button>
             )}
           </div>
         </div>
 
-        {/* Filter pills */}
-        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-          {filters.map(filter => (
+        {/* filter pills */}
+        <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
+          {filterOptions.map(opt => (
             <button
-              key={filter}
-              onClick={() => setActiveFilter(filter)}
-              className="shrink-0 px-4 py-1.5 text-xs font-black uppercase tracking-widest transition-all duration-200"
-              style={getPillStyle(activeFilter === filter)}
+              key={opt}
+              onClick={() => {
+                changeFilter(opt);
+              }}
+              className="shrink-0 px-3 py-1 text-xs font-black uppercase tracking-widest transition-all duration-200"
+              style={{
+                background: activeFilter === opt ? 'var(--color-primary)' : 'transparent',
+                color: activeFilter === opt ? '#000' : 'rgba(255,255,255,0.35)',
+                border: activeFilter === opt ? '1px solid var(--color-primary)' : '1px solid rgba(255,255,255,0.09)',
+              }}
             >
-              {filter}
+              {opt}
             </button>
           ))}
         </div>

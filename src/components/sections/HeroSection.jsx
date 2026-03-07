@@ -178,19 +178,32 @@ const HeroSection = () => {
               from experienced coaches — all in one place.
             </p>
 
-            {/* Buttons */}
-            <div ref={buttonsRef} className="flex flex-col sm:flex-row gap-4 mb-8" style={{ opacity: 0 }}>
-              <Link
-                to="/workoutLibrary"
-                className="btn-primary inline-flex items-center justify-center gap-2 group"
-              >
-                Explore Workouts
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <a href="#pricing" className="btn-secondary inline-flex items-center justify-center">
-                See Pricing
-              </a>
-            </div>
+  {/* Buttons */}
+  <div ref={buttonsRef} className="flex flex-col sm:flex-row gap-4 mb-8" style={{ opacity: 0 }}>
+  <Link
+    to="/workoutLibrary"
+    className="btn-primary inline-flex items-center justify-center gap-2 group"
+  >
+    <span>Explore Workouts</span>
+    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+  </Link>
+  <a 
+    href="#pricing" 
+    onClick={(e) => {
+      e.preventDefault()
+      const pricingSection = document.querySelector('#pricing')
+      if (pricingSection) {
+        pricingSection.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'  // aligns to top of section
+        })
+      }
+    }}
+    className="btn-secondary inline-flex items-center justify-center"
+  >
+    <span>See Pricing</span>
+  </a>
+</div>
 
             {/* Guarantee */}
             <div

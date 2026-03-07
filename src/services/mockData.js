@@ -1,7 +1,11 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // MOCK DATA — matches ExerciseDB API response shape exactly.
-// When you integrate the API, just replace these arrays with API responses.
-// API shape: { id, name, bodyPart, equipment, target, secondaryMuscles, instructions, gifUrl }
+// 
+// 📌 FALLBACK EXPLANATION:
+// This data is used when the ExerciseDB API rate limit is reached 
+// (free tier allows only 100 requests/month). The site automatically 
+// switches to this mock data so users never see a broken page. 
+// When the API quota resets (monthly), the site will try again.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const BODY_PARTS = [
@@ -11,12 +15,14 @@ export const BODY_PARTS = [
 
 export const EQUIPMENT_LIST = [
   'all', 'barbell', 'body weight', 'cable', 'dumbbell',
-  'kettlebell', 'machine', 'resistance band'
+  'kettlebell', 'machine', 'resistance band', 'ez barbell',
+  'foam roll', 'medicine ball', 'stability ball', 'bands'
 ]
 
 export const TARGET_MUSCLES = [
   'all', 'abs', 'biceps', 'calves', 'delts', 'glutes',
-  'hamstrings', 'lats', 'pectorals', 'quads', 'triceps', 'traps'
+  'hamstrings', 'lats', 'pectorals', 'quads', 'triceps', 'traps',
+  'abductors', 'adductors', 'forearms', 'lower back', 'upper back'
 ]
 
 // Muscle → accent color map (used for badge colors on cards)
@@ -32,10 +38,16 @@ export const MUSCLE_COLORS = {
   quads:       '#84cc16',
   triceps:     '#f97316',
   traps:       '#a78bfa',
+  abductors:   '#14b8a6',
+  adductors:   '#d946ef',
+  forearms:    '#f43f5e',
+  'lower back': '#64748b',
+  'upper back': '#94a3b8',
   default:     '#6b7280',
 }
 
 export const MOCK_EXERCISES = [
+  // CHEST EXERCISES
   {
     id: '0001',
     name: 'Barbell Bench Press',
@@ -54,6 +66,72 @@ export const MOCK_EXERCISES = [
     ],
   },
   {
+    id: '0101',
+    name: 'Incline Dumbbell Press',
+    bodyPart: 'chest',
+    equipment: 'dumbbell',
+    target: 'pectorals',
+    secondaryMuscles: ['triceps', 'delts'],
+    gifUrl: null,
+    instructions: [
+      'Set an incline bench to 30-45 degrees.',
+      'Sit with a dumbbell in each hand resting on your thighs.',
+      'Lie back and press the dumbbells above your chest.',
+      'Lower them until they reach chest level.',
+      'Press back up to the starting position.',
+    ],
+  },
+  {
+    id: '0102',
+    name: 'Cable Crossover',
+    bodyPart: 'chest',
+    equipment: 'cable',
+    target: 'pectorals',
+    secondaryMuscles: ['delts'],
+    gifUrl: null,
+    instructions: [
+      'Set both pulleys to chest height on a cable machine.',
+      'Grab each handle and step forward, arms wide.',
+      'With a slight bend in your elbows, bring your hands together in front of you.',
+      'Squeeze your chest at the peak of the movement.',
+      'Slowly return to the starting position.',
+    ],
+  },
+  {
+    id: '0103',
+    name: 'Push-Up',
+    bodyPart: 'chest',
+    equipment: 'body weight',
+    target: 'pectorals',
+    secondaryMuscles: ['triceps', 'delts', 'abs'],
+    gifUrl: null,
+    instructions: [
+      'Start in a plank position with hands slightly wider than shoulders.',
+      'Keep your body in a straight line from head to heels.',
+      'Lower your chest toward the floor by bending your elbows.',
+      'Push back up to the starting position.',
+      'Repeat for desired reps.',
+    ],
+  },
+  {
+    id: '0104',
+    name: 'Decline Bench Press',
+    bodyPart: 'chest',
+    equipment: 'barbell',
+    target: 'pectorals',
+    secondaryMuscles: ['triceps', 'delts'],
+    gifUrl: null,
+    instructions: [
+      'Secure your feet at the end of a decline bench.',
+      'Grip the barbell slightly wider than shoulder width.',
+      'Unrack the bar and lower it to your lower chest.',
+      'Press the bar back up explosively.',
+      'Focus on targeting the lower chest fibers.',
+    ],
+  },
+
+  // BACK EXERCISES
+  {
     id: '0002',
     name: 'Pull-Up',
     bodyPart: 'back',
@@ -69,6 +147,56 @@ export const MOCK_EXERCISES = [
       'Repeat for the desired number of reps.',
     ],
   },
+  {
+    id: '0201',
+    name: 'Barbell Row',
+    bodyPart: 'back',
+    equipment: 'barbell',
+    target: 'lats',
+    secondaryMuscles: ['traps', 'biceps'],
+    gifUrl: null,
+    instructions: [
+      'Bend at the hips with a slight knee bend, keeping your back flat.',
+      'Grip the barbell with hands shoulder-width apart.',
+      'Pull the bar toward your lower chest, squeezing your shoulder blades.',
+      'Lower the bar back down with control.',
+      'Keep your core tight throughout the movement.',
+    ],
+  },
+  {
+    id: '0202',
+    name: 'Dumbbell Row',
+    bodyPart: 'back',
+    equipment: 'dumbbell',
+    target: 'lats',
+    secondaryMuscles: ['traps', 'biceps'],
+    gifUrl: null,
+    instructions: [
+      'Place one knee and hand on a bench for support.',
+      'Hold a dumbbell in the other hand with your arm extended.',
+      'Pull the dumbbell toward your hip, keeping your back flat.',
+      'Squeeze your lat at the top of the movement.',
+      'Lower slowly and repeat.',
+    ],
+  },
+  {
+    id: '0203',
+    name: 'T-Bar Row',
+    bodyPart: 'back',
+    equipment: 'machine',
+    target: 'lats',
+    secondaryMuscles: ['traps', 'biceps'],
+    gifUrl: null,
+    instructions: [
+      'Straddle the T-bar row machine with feet shoulder-width apart.',
+      'Grip the handles with a neutral grip.',
+      'Pull the bar toward your chest, squeezing your shoulder blades.',
+      'Lower the bar back down with control.',
+      'Keep your back flat throughout the movement.',
+    ],
+  },
+
+  // LEG EXERCISES
   {
     id: '0003',
     name: 'Barbell Back Squat',
@@ -86,6 +214,68 @@ export const MOCK_EXERCISES = [
     ],
   },
   {
+    id: '0301',
+    name: 'Front Squat',
+    bodyPart: 'upper legs',
+    equipment: 'barbell',
+    target: 'quads',
+    secondaryMuscles: ['glutes', 'abs'],
+    gifUrl: null,
+    instructions: [
+      'Position the barbell across the front of your shoulders.',
+      'Keep your elbows high and chest up.',
+      'Lower into a squat, keeping your torso upright.',
+      'Drive through your heels to stand back up.',
+    ],
+  },
+  {
+    id: '0302',
+    name: 'Leg Press',
+    bodyPart: 'upper legs',
+    equipment: 'machine',
+    target: 'quads',
+    secondaryMuscles: ['glutes', 'hamstrings'],
+    gifUrl: null,
+    instructions: [
+      'Sit on the leg press machine and place your feet on the platform shoulder-width apart.',
+      'Release the safety handles and lower the weight until your knees are at 90 degrees.',
+      'Push through your heels to return to the starting position.',
+      'Do not lock your knees at the top.',
+    ],
+  },
+  {
+    id: '0303',
+    name: 'Leg Extension',
+    bodyPart: 'upper legs',
+    equipment: 'machine',
+    target: 'quads',
+    secondaryMuscles: [],
+    gifUrl: null,
+    instructions: [
+      'Sit on the leg extension machine with your ankles behind the pads.',
+      'Extend your legs until they are straight.',
+      'Squeeze your quads at the top.',
+      'Lower slowly back to the starting position.',
+    ],
+  },
+  {
+    id: '0304',
+    name: 'Leg Curl',
+    bodyPart: 'upper legs',
+    equipment: 'machine',
+    target: 'hamstrings',
+    secondaryMuscles: ['calves'],
+    gifUrl: null,
+    instructions: [
+      'Lie face down on the leg curl machine with your ankles under the pads.',
+      'Curl your legs toward your glutes.',
+      'Squeeze your hamstrings at the top.',
+      'Lower slowly back to the starting position.',
+    ],
+  },
+
+  // SHOULDER EXERCISES
+  {
     id: '0004',
     name: 'Dumbbell Shoulder Press',
     bodyPart: 'shoulders',
@@ -102,21 +292,39 @@ export const MOCK_EXERCISES = [
     ],
   },
   {
-    id: '0005',
-    name: 'Romanian Deadlift',
-    bodyPart: 'upper legs',
-    equipment: 'barbell',
-    target: 'hamstrings',
-    secondaryMuscles: ['glutes', 'lats'],
+    id: '0401',
+    name: 'Lateral Raise',
+    bodyPart: 'shoulders',
+    equipment: 'dumbbell',
+    target: 'delts',
+    secondaryMuscles: ['traps'],
     gifUrl: null,
     instructions: [
-      'Stand holding a barbell in front of your thighs with an overhand grip.',
-      'Keep a slight bend in your knees and your back flat throughout.',
-      'Hinge at the hips and push them back as you lower the bar toward the floor.',
-      'Lower until you feel a deep stretch in your hamstrings.',
-      'Drive your hips forward to return to standing position.',
+      'Stand holding dumbbells at your sides, palms facing each other.',
+      'Keep a slight bend in your elbows.',
+      'Raise the dumbbells out to the sides until they reach shoulder height.',
+      'Lower slowly back to the starting position.',
+      'Control the movement throughout.',
     ],
   },
+  {
+    id: '0012',
+    name: 'Face Pull',
+    bodyPart: 'shoulders',
+    equipment: 'cable',
+    target: 'delts',
+    secondaryMuscles: ['traps', 'biceps'],
+    gifUrl: null,
+    instructions: [
+      'Set a cable machine to upper-chest height with a rope attachment.',
+      'Grip both ends of the rope and step back to create tension.',
+      'Pull the rope toward your face, separating your hands as you pull.',
+      'Aim to bring your hands to either side of your face with elbows high.',
+      'Slowly return to the starting position and repeat.',
+    ],
+  },
+
+  // ARMS EXERCISES
   {
     id: '0006',
     name: 'Cable Tricep Pushdown',
@@ -150,6 +358,38 @@ export const MOCK_EXERCISES = [
     ],
   },
   {
+    id: '0601',
+    name: 'Skull Crusher',
+    bodyPart: 'upper arms',
+    equipment: 'barbell',
+    target: 'triceps',
+    secondaryMuscles: [],
+    gifUrl: null,
+    instructions: [
+      'Lie on a bench holding an EZ bar with arms extended above your chest.',
+      'Lower the bar toward your forehead by bending your elbows.',
+      'Extend your arms back to the starting position.',
+      'Keep your elbows pointed toward the ceiling.',
+    ],
+  },
+  {
+    id: '0602',
+    name: 'Hammer Curl',
+    bodyPart: 'upper arms',
+    equipment: 'dumbbell',
+    target: 'biceps',
+    secondaryMuscles: ['forearms'],
+    gifUrl: null,
+    instructions: [
+      'Hold dumbbells at your sides with palms facing each other.',
+      'Curl the dumbbells up while keeping your palms facing in.',
+      'Squeeze at the top and lower slowly.',
+      'Targets both biceps and brachialis.',
+    ],
+  },
+
+  // CORE EXERCISES
+  {
     id: '0008',
     name: 'Plank',
     bodyPart: 'waist',
@@ -165,6 +405,38 @@ export const MOCK_EXERCISES = [
       'Do not let your hips sag or rise.',
     ],
   },
+  {
+    id: '0701',
+    name: 'Russian Twist',
+    bodyPart: 'waist',
+    equipment: 'body weight',
+    target: 'abs',
+    secondaryMuscles: ['obliques'],
+    gifUrl: null,
+    instructions: [
+      'Sit on the floor with knees bent and feet elevated.',
+      'Lean back slightly, keeping your back straight.',
+      'Rotate your torso to the right, then to the left.',
+      'Touch the floor beside you on each side.',
+    ],
+  },
+  {
+    id: '0702',
+    name: 'Hanging Knee Raise',
+    bodyPart: 'waist',
+    equipment: 'body weight',
+    target: 'abs',
+    secondaryMuscles: ['hip flexors'],
+    gifUrl: null,
+    instructions: [
+      'Hang from a pull-up bar with arms fully extended.',
+      'Raise your knees toward your chest.',
+      'Lower them slowly back to the starting position.',
+      'Avoid swinging.',
+    ],
+  },
+
+  // GLUTE EXERCISES
   {
     id: '0009',
     name: 'Hip Thrust',
@@ -182,19 +454,52 @@ export const MOCK_EXERCISES = [
     ],
   },
   {
-    id: '0010',
-    name: 'Lat Pulldown',
-    bodyPart: 'back',
-    equipment: 'cable',
-    target: 'lats',
-    secondaryMuscles: ['biceps', 'traps'],
+    id: '0801',
+    name: 'Bulgarian Split Squat',
+    bodyPart: 'upper legs',
+    equipment: 'dumbbell',
+    target: 'glutes',
+    secondaryMuscles: ['quads', 'hamstrings'],
     gifUrl: null,
     instructions: [
-      'Sit at a lat pulldown machine and grasp the bar with a wide overhand grip.',
-      'Lean back slightly and retract your shoulder blades.',
-      'Pull the bar down toward your upper chest.',
-      'Squeeze your lats at the bottom of the movement.',
-      'Slowly return the bar to the starting position with arms fully extended.',
+      'Place one foot behind you on a bench.',
+      'Hold dumbbells in each hand.',
+      'Lower your body until your front thigh is parallel to the ground.',
+      'Drive through your front heel to return to start.',
+    ],
+  },
+
+  // CARDIO EXERCISES
+  {
+    id: '0901',
+    name: 'Jumping Jacks',
+    bodyPart: 'cardio',
+    equipment: 'body weight',
+    target: 'cardiovascular system',
+    secondaryMuscles: ['calves', 'delts'],
+    gifUrl: null,
+    instructions: [
+      'Stand with feet together and arms at sides.',
+      'Jump while spreading your feet shoulder-width apart.',
+      'Simultaneously raise your arms above your head.',
+      'Jump back to starting position.',
+      'Repeat rapidly for desired duration.',
+    ],
+  },
+  {
+    id: '0902',
+    name: 'Burpee',
+    bodyPart: 'cardio',
+    equipment: 'body weight',
+    target: 'cardiovascular system',
+    secondaryMuscles: ['abs', 'quads', 'chest'],
+    gifUrl: null,
+    instructions: [
+      'Start standing, then drop into a squat with hands on the floor.',
+      'Kick your feet back into a plank position.',
+      'Perform a push-up (optional).',
+      'Jump your feet back to your hands.',
+      'Explosively jump into the air with arms overhead.',
     ],
   },
   {
@@ -214,19 +519,34 @@ export const MOCK_EXERCISES = [
     ],
   },
   {
-    id: '0012',
-    name: 'Face Pull',
-    bodyPart: 'shoulders',
+    id: '0010',
+    name: 'Lat Pulldown',
+    bodyPart: 'back',
     equipment: 'cable',
-    target: 'delts',
-    secondaryMuscles: ['traps', 'biceps'],
+    target: 'lats',
+    secondaryMuscles: ['biceps', 'traps'],
     gifUrl: null,
     instructions: [
-      'Set a cable machine to upper-chest height with a rope attachment.',
-      'Grip both ends of the rope and step back to create tension.',
-      'Pull the rope toward your face, separating your hands as you pull.',
-      'Aim to bring your hands to either side of your face with elbows high.',
-      'Slowly return to the starting position and repeat.',
+      'Sit at a lat pulldown machine and grasp the bar with a wide overhand grip.',
+      'Lean back slightly and retract your shoulder blades.',
+      'Pull the bar down toward your upper chest.',
+      'Squeeze your lats at the bottom of the movement.',
+      'Slowly return the bar to the starting position with arms fully extended.',
+    ],
+  },
+  {
+    id: '0305',
+    name: 'Calf Raise',
+    bodyPart: 'lower legs',
+    equipment: 'body weight',
+    target: 'calves',
+    secondaryMuscles: [],
+    gifUrl: null,
+    instructions: [
+      'Stand on the edge of a step with heels hanging off.',
+      'Raise your heels as high as possible.',
+      'Lower them down below the step level.',
+      'Feel the stretch in your calves.',
     ],
   },
 ]

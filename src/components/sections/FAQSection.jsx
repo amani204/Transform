@@ -120,7 +120,7 @@ const FAQSection = () => {
             <div className="mt-8">
               <p className="text-text-muted text-sm">
                 Still have questions?{' '}
-                <a href="#contact" className="text-primary hover:underline">
+                <a href="/contact" className="text-primary hover:underline">
                   Contact us
                 </a>
               </p>
