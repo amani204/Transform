@@ -1,16 +1,17 @@
-import { useState, useEffect, useRef } from 'react'
-import { ChevronDown, ChevronUp, ArrowRight } from 'lucide-react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useState, useRef } from 'react'
+import { ChevronDown, ChevronUp } from 'lucide-react'
 
-gsap.registerPlugin(ScrollTrigger)
+import { useSlideIn, useSlideInFaq } from '../../hooks'
+
 
 const FAQSection = () => {
   const [openIndex, setOpenIndex] = useState(null)
   const sectionRef = useRef(null)
   const leftTextRef = useRef(null)
   const faqItemsRef = useRef([])
-
+  
+  useSlideIn(leftTextRef, { from: 'left', distance: 100, start: 'top 70%' })
+  useSlideInFaq({ sectionRef, faqItemsRef })
   const faqs = [
     {
       question: 'What should I expect during my first session?',
@@ -38,57 +39,12 @@ const FAQSection = () => {
     }
   ]
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      
-      // Left text appears from left
-      gsap.fromTo(leftTextRef.current,
-        { 
-          opacity: 0, 
-          x: -100
-        },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 1,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 70%',
-          }
-        }
-      )
-
-      // FAQ items appear from left one after another
-      gsap.fromTo(faqItemsRef.current,
-        { 
-          opacity: 0, 
-          x: -50
-        },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 0.8,
-          stagger: 0.15, // Each item 0.15s apart
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 70%',
-          }
-        }
-      )
-
-    }, sectionRef)
-
-    return () => ctx.revert()
-  }, [])
-
   const toggleFAQ = (index) => {
     setOpenIndex(openIndex === index ? null : index)
   }
 
   return (
-    <section 
+    <div 
       ref={sectionRef}
       className="py-20 bg-dark-bg relative overflow-hidden" 
       id="faq"
@@ -104,7 +60,7 @@ const FAQSection = () => {
         {/* Two Column Layout */}
         <div className="grid lg:grid-cols-2 gap-12 items-start">
           
-          {/* LEFT COLUMN - Title & Description */}
+          {/* Title & Description */}
           <div ref={leftTextRef} className="lg:sticky lg:top-32">
            <span className="text-primary font-black tracking-wider text-sm">FAQ</span>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 mt-4">
@@ -170,7 +126,7 @@ const FAQSection = () => {
         </div>
 
       </div>
-    </section>
+    </div>
   )
 }
 

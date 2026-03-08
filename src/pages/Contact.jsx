@@ -1,10 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useFadeUp, useButtonPulse,shakeElement, fadeOutElement} from '../hooks'
 import { ArrowUpRight, Mail, User, MessageSquare } from 'lucide-react'
-
-gsap.registerPlugin(ScrollTrigger)
-
 const Contact = () => {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const [submitted, setSubmitted] = useState(false)
@@ -13,61 +9,14 @@ const Contact = () => {
   const sectionRef = useRef(null)
   const contentRef = useRef(null)
   const btnRef = useRef(null)
-  const pulseRef = useRef(null) // tracks the pulse tween separately
+  const pulseRef = useRef(null) 
 
   const allFilled = form.name.trim() && form.email.trim() && form.message.trim()
+  useFadeUp(contentRef, { stagger: 0.15, start: 'top 75%', y: 30, duration: 0.7 })
+  useButtonPulse({ btnRef, pulseRef, allFilled, submitted })
+  
 
-  // ── Entrance animation ─────────────────────────────────────────
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 75%',
-          toggleActions: 'play none none none',
-        }
-      }).fromTo(contentRef.current.children,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.7, stagger: 0.15, ease: 'power3.out' }
-      )
-    }, sectionRef)
-
-    return () => ctx.revert()
-  }, [])
-
-  // ── Button pulse — only scale, never opacity ───────────────────
-  useEffect(() => {
-    if (!btnRef.current) return
-
-    // Kill any existing pulse tween
-    if (pulseRef.current) {
-      pulseRef.current.kill()
-      pulseRef.current = null
-    }
-
-    if (allFilled && !submitted) {
-      // Make sure scale is reset first, then start pulse
-      gsap.set(btnRef.current, { scale: 1 })
-      pulseRef.current = gsap.to(btnRef.current, {
-        scale: 1.04,
-        duration: 0.7,
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut',
-      })
-    } else {
-      gsap.set(btnRef.current, { scale: 1 })
-    }
-
-    return () => {
-      if (pulseRef.current) {
-        pulseRef.current.kill()
-        pulseRef.current = null
-      }
-    }
-  }, [allFilled, submitted])
-
-  // ── Validation ─────────────────────────────────────────────────
+  // Validation
   const validate = () => {
     const e = {}
     if (!form.name.trim()) e.name = 'Name is required'
@@ -86,29 +35,19 @@ const Contact = () => {
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }))
   }
 
-  const handleSubmit = () => {
-    const e = validate()
-    if (Object.keys(e).length) {
-      setErrors(e)
-      gsap.fromTo(contentRef.current,
-        { x: -10 },
-        { x: 0, duration: 0.5, ease: 'elastic.out(1, 0.3)' }
-      )
-      return
-    }
-    // Kill pulse before unmounting button
-    if (pulseRef.current) {
-      pulseRef.current.kill()
-      pulseRef.current = null
-    }
-    gsap.to(contentRef.current, {
-      opacity: 0,
-      y: -20,
-      duration: 0.4,
-      ease: 'power2.in',
-      onComplete: () => setSubmitted(true),
-    })
+   const handleSubmit = () => {
+  const e = validate()
+  if (Object.keys(e).length) {
+    setErrors(e)
+    shakeElement(contentRef.current)
+    return
   }
+  if (pulseRef.current) {
+    pulseRef.current.kill()
+    pulseRef.current = null
+  }
+  fadeOutElement(contentRef.current, () => setSubmitted(true))
+}
 
   
   if (submitted) {
@@ -209,13 +148,8 @@ const Contact = () => {
 // Thank You screen 
 const ThankYou = () => {
   const ref = useRef(null)
-
-  useEffect(() => {
-    gsap.fromTo(ref.current.children,
-      { y: 30, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.7, stagger: 0.15, ease: 'power3.out' }
-    )
-  }, [])
+  useFadeUp(ref, { stagger: 0.15, y: 30, duration: 0.7 })
+  
 
   return (
     <div ref={ref} className="container-custom max-w-2xl mx-auto px-6 text-center flex flex-col items-center gap-6">

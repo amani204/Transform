@@ -1,52 +1,17 @@
 import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-gsap.registerPlugin(ScrollTrigger)
+import { useMarqueeDual, useFadeUp } from '../../hooks'
 
 const CTASection = () => {
   const sectionRef = useRef(null)
   const marqueeRef = useRef(null)
   const contentRef = useRef(null)
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-
-      // Marquee effect with (Two text spans)
-      const marqueeTrack = marqueeRef.current
-      gsap.to(marqueeTrack, {
-        xPercent: -50,
-        duration: 12,
-        ease: 'none',
-        repeat: -1,
-      })
-      gsap.fromTo(
-        contentRef.current,
-        { y: 80, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 80%',
-            toggleActions: 'play none none none',
-          },
-        }
-      )
-
-    }, sectionRef)
-
-    return () => ctx.revert()
-  }, [])
-
   const marqueeText = Array(10).fill('TRANSFORM').join(' · ')
-
+  useMarqueeDual(marqueeRef, { duration: 12 })
+  useFadeUp(contentRef, { start: 'top 80%', y: 80 })
   return (
-    <section
+    <div
       ref={sectionRef}
       className="py-20 bg-dark-bg relative overflow-hidden"
     >
@@ -97,7 +62,7 @@ const CTASection = () => {
           </Link>
         </div>
       </div>
-    </section>
+    </div>
   )
 }
 

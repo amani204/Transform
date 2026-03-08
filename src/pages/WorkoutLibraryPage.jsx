@@ -1,36 +1,13 @@
-
 import { useState, useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { Dumbbell, AlertCircle } from 'lucide-react'
-import { useExercises }  from '../hooks/useExercises'
-
+import { useExercises } from '../hooks/useExercises'
 import { Card, Modal, Filter, Pagination, Skeleton } from '../components/workoutLibrary'
-
-import {EQUIPMENT_LIST, BODY_PARTS, TARGET_MUSCLES} from '../services/mockData'
-
-// ── SKELETON LOADING CARD ─────────────────────────────────────────
-// Shows a shimmering placeholder while exercises are loading.
-// Matches the exact dimensions of a real ExerciseCard for seamless transition.
-const SkeletonCard = () => (
-  <div className="overflow-hidden animate-pulse"
-    style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
-    <div style={{ height: '220px', background: 'rgba(255,255,255,0.06)' }} />
-    <div className="p-5 space-y-3">
-      <div className="h-3.5 rounded-sm" style={{ background: 'rgba(255,255,255,0.07)', width: '65%' }} />
-      <div className="flex justify-between">
-        <div className="h-2.5 rounded-sm" style={{ background: 'rgba(255,255,255,0.05)', width: '28%' }} />
-        <div className="h-2.5 rounded-sm" style={{ background: 'rgba(255,255,255,0.05)', width: '22%' }} />
-      </div>
-    </div>
-  </div>
-)
-
+import { EQUIPMENT_LIST, BODY_PARTS, TARGET_MUSCLES } from '../services/mockData'
+import { useLibraryHero, useExerciseGrid } from '../hooks'
 const WorkoutLibraryPage = () => {
   const [selectedExercise, setSelectedExercise] = useState(null)
 
-  // ── CUSTOM HOOK ────────────────────────────────────────────────
-  // useExercises manages all exercise data, filters, pagination, and API fallback.
-  // usingMock indicates if we're in demo mode (API limit reached).
   const {
     exercises, isLoading, error, usingMock,
     page, setPage, hasMore, LIMIT,
@@ -38,53 +15,24 @@ const WorkoutLibraryPage = () => {
     changeFilter, changeFilterType, changeSearch,
   } = useExercises()
 
-  // ── REFS ───────────────────────────────────────────────────────
-  const heroRef  = useRef(null)  // For GSAP hero animation
-  const gridRef  = useRef(null)  // For scrolling to top on page change
-  const cardRefs = useRef([])    // Array of refs for staggered card animations
+  // REFS 
+  const heroRef = useRef(null)
+  const titleRef = useRef(null)
+  const subtitleRef = useRef(null)
+  const statsRef = useRef(null)
+  const statusRef = useRef(null)
+  const gridRef = useRef(null)
+  const cardRefs = useRef([])
 
-  // ── GSAP HERO ANIMATION ────────────────────────────────────────
-  // Animates the hero section elements when page loads.
-  useEffect(() => {
-    if (!heroRef.current) return
-    const ctx = gsap.context(() => {
-      gsap.fromTo(heroRef.current.children,
-        { y: 40, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, stagger: 0.12, ease: 'power3.out' }
-      )
-    }, heroRef)
-    return () => ctx.revert()
-  }, [])
-
-  // ── STAGGERED CARD ANIMATION ───────────────────────────────────
-  // When new exercises load, cards animate in one after another.
-  // Creates a smooth "waterfall" effect as cards appear.
-  useEffect(() => {
-    if (isLoading) return
-    const valid = cardRefs.current.filter(Boolean)
-    if (!valid.length) return
-    cardRefs.current = [] // Reset refs for next batch
-    gsap.fromTo(valid,
-      { y: 28, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.45, stagger: 0.06, ease: 'power3.out', delay: 0.05 }
-    )
-  }, [isLoading, exercises])
-
-  // ── SCROLL TO TOP ON PAGE CHANGE ───────────────────────────────
-  // When user changes page, scroll back to top of grid for better UX.
-  useEffect(() => {
-    if (gridRef.current) {
-      gridRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }
-  }, [page])
+ useLibraryHero({ heroRef, titleRef, subtitleRef, statsRef, statusRef }, usingMock)
+ useExerciseGrid(cardRefs, isLoading, exercises)
 
   const resultCount = exercises.length
   const hasActiveFilters = activeFilter !== 'all' || searchQuery.trim() !== ''
 
   return (
-    <div className="min-h-screen bg-dark-bg">
-
-      {/* ── HERO SECTION ─────────────────────────────────────────── */}
+    <div className="bg-dark-bg min-h-screen">
+      {/* HERO SECTION */}
       <div className="pt-40 pb-12 px-6 overflow-hidden border-b border-white/10 relative">
         {/* Background glow effects */}
         <div className="absolute inset-0 opacity-5">
@@ -93,26 +41,29 @@ const WorkoutLibraryPage = () => {
         </div>
 
         <div ref={heroRef} className="container-custom relative z-10">
-          <span className="block text-primary font-black tracking-[0.25em] text-xs uppercase mb-3" style={{ opacity: 0 }}>
+          <span className="block text-primary font-black tracking-[0.25em] text-xs uppercase mb-3">
             Workout Library
           </span>
-          <h1 className="text-5xl md:text-6xl font-bold text-white leading-tight mb-3"
-            style={{ fontFamily: 'Georgia, serif', opacity: 0 }}>
+          
+          <h1 
+            ref={titleRef}
+            className="text-5xl md:text-6xl font-bold text-white leading-tight mb-3"
+          >
             Find Your Exercise
           </h1>
           
-          {/* ── DYNAMIC DESCRIPTION ───────────────────────────────── */}
-          {/* Changes based on API mode: real data vs mock fallback */}
-          <p className="text-white/40 text-lg max-w-lg" style={{ opacity: 0 }}>
+          <p 
+            ref={subtitleRef}
+            className="text-white/40 text-lg max-w-lg"
+          >
             {usingMock
               ? 'Sample exercises shown — API limit reached. Full library retries in 60 min.'
               : `${BODY_PARTS.length - 1} body parts, ${EQUIPMENT_LIST.length - 1} equipment types — powered by ExerciseDB.`
             }
           </p>
 
-          {/* ── STATS GRID ────────────────────────────────────────── */}
-          {/* Shows counts with visual feedback for mock mode */}
-          <div className="flex flex-wrap gap-8 mt-8" style={{ opacity: 0 }}>
+          {/* Stats Grid */}
+          <div ref={statsRef} className="flex flex-wrap gap-8 mt-8">
             {[
               {
                 label: 'Exercises',
@@ -148,9 +99,8 @@ const WorkoutLibraryPage = () => {
             ))}
           </div>
 
-          {/* ── LIVE/STATUS INDICATOR ─────────────────────────────── */}
-          {/* Green pulsing dot when using real API, red dot for mock mode */}
-          <div className="flex items-center gap-2 mt-6" style={{ opacity: 0 }}>
+          {/* Status Indicator */}
+          <div ref={statusRef} className="flex items-center gap-2 mt-6">
             <div className={`w-1.5 h-1.5 rounded-full ${usingMock ? 'bg-red-700' : 'bg-green-400'}`}
               style={!usingMock ? { boxShadow: '0 0 6px #4ade80', animation: 'pulse 2s infinite' } : {}} />
             <span className="text-xs uppercase tracking-widest"
@@ -161,7 +111,7 @@ const WorkoutLibraryPage = () => {
         </div>
       </div>
 
-      {/* ── FILTER BAR ───────────────────────────────────────────── */}
+      {/* FILTER BAR  */}
       <Filter
         filterType={filterType}
         changeFilterType={changeFilterType}
@@ -172,8 +122,7 @@ const WorkoutLibraryPage = () => {
         changeSearch={changeSearch}
       />
 
-      {/* ── MOCK MODE BANNER ─────────────────────────────────────── */}
-      {/* Shows when API rate limit is reached - informs user */}
+      {/* MOCK MODE BANNER */}
       {usingMock && (
         <div className="flex items-center justify-center gap-2 py-2 text-xs uppercase tracking-widest"
           style={{ background: 'rgba(255,100,0,0.08)', borderBottom: '1px solid rgba(255,100,0,0.15)', color: 'rgba(255,100,0,0.6)' }}>
@@ -181,10 +130,10 @@ const WorkoutLibraryPage = () => {
         </div>
       )}
 
-      {/* ── MAIN CONTENT ─────────────────────────────────────────── */}
+      {/* MAIN CONTENT  */}
       <div ref={gridRef} className="container-custom px-6 py-10">
 
-        {/* ── RESULT META & CLEAR BUTTON ─────────────────────────── */}
+        {/* RESULT META & CLEAR BUTTON */}
         <div className="flex items-center justify-between mb-7">
           {!isLoading && !error && (
             <p className="text-white/25 text-xs uppercase tracking-widest">
@@ -192,27 +141,22 @@ const WorkoutLibraryPage = () => {
             </p>
           )}
           
-          {/* Filter status chips and clear button */}
           <div className="flex items-center gap-3 ml-auto">
-            {/* Active filter pill (e.g., "chest") */}
             {activeFilter !== 'all' && (
               <div className="text-xs bg-primary/20 text-primary px-2 py-1 rounded-sm uppercase tracking-wider">
                 {activeFilter}
               </div>
             )}
             
-            {/* Active search query pill */}
             {searchQuery && (
               <div className="text-xs bg-white/10 text-white/80 px-2 py-1 rounded-sm">
                 "{searchQuery}"
               </div>
             )}
             
-            {/* Clear button - only shows when filters/search active */}
             {hasActiveFilters && (
               <button
                 onClick={() => { 
-                  console.log('🧹 Clear button clicked');
                   changeFilter('all'); 
                   changeSearch('');
                   if (page !== 1) setPage(1);
@@ -225,7 +169,7 @@ const WorkoutLibraryPage = () => {
           </div>
         </div>
 
-        {/* ── ERROR STATE ────────────────────────────────────────── */}
+        {/* Error State */}
         {error && (
           <div className="flex flex-col items-center justify-center py-28 text-center gap-4">
             <AlertCircle className="w-10 h-10 text-red-400/40" />
@@ -241,14 +185,14 @@ const WorkoutLibraryPage = () => {
           </div>
         )}
 
-        {/* ── LOADING STATE ──────────────────────────────────────── */}
+        {/* Loading State */}
         {isLoading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {Array.from({ length: LIMIT }).map((_, i) => <Skeleton key={i} />)}
           </div>
         )}
 
-        {/* ── EMPTY STATE ────────────────────────────────────────── */}
+        {/* Empty State */}
         {!isLoading && !error && resultCount === 0 && (
           <div className="flex flex-col items-center justify-center py-28 text-center gap-3">
             <Dumbbell className="w-10 h-10 text-white/10" />
@@ -257,7 +201,7 @@ const WorkoutLibraryPage = () => {
           </div>
         )}
 
-        {/* ── EXERCISE GRID ──────────────────────────────────────── */}
+        {/* Exercise Grid */}
         {!isLoading && !error && resultCount > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {exercises.map((ex, i) => (
@@ -266,13 +210,13 @@ const WorkoutLibraryPage = () => {
                 exercise={ex}
                 onClick={setSelectedExercise}
                 animRef={el => { cardRefs.current[i] = el }}
-                usingMock={usingMock} // Pass down to show/hide sample badges
+                usingMock={usingMock}
               />
             ))}
           </div>
         )}
 
-        {/* ── PAGINATION CONTROLS ────────────────────────────────── */}
+        {/* Pagination */}
         {!error && (
           <Pagination
             page={page}
@@ -284,7 +228,7 @@ const WorkoutLibraryPage = () => {
         )}
       </div>
 
-      {/* ── EXERCISE DETAIL MODAL ────────────────────────────────── */}
+      {/* Modal */}
       {selectedExercise && (
         <Modal
           exercise={selectedExercise}

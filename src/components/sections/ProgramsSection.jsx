@@ -1,65 +1,18 @@
-import { useEffect, useRef } from 'react'
+import {  useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-// Import program images
 import yogaImg from '../../assets/programs/yoga.jpg'
 import strengthImg from '../../assets/programs/strength.jpg'
 import cardioImg from '../../assets/programs/cardio.jpg'
-
-gsap.registerPlugin(ScrollTrigger)
+import { useFadeUp, useSlideInFaq  } from '../../hooks'
 
 const ProgramsSection = () => {
   const sectionRef = useRef(null)
   const headerRef = useRef(null)
   const cardsRef = useRef([])
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-
-       gsap.fromTo(
-        headerRef.current.children,
-        { y: 30, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          stagger: 0.15,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: headerRef.current,
-            start: 'top 80%',
-            toggleActions: 'play none none none',
-          },
-        }
-      )
-      
-      // Cards appear one after another
-      gsap.fromTo(cardsRef.current,
-        { 
-          opacity: 0, 
-          y: 50
-        },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          stagger: 0.2,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 70%',
-          }
-        }
-      )
-
-    }, sectionRef)
-
-    return () => ctx.revert()
-  }, [])
-
+  
+  useFadeUp(headerRef, { stagger: 0.15, start: 'top 80%' })
+  useSlideInFaq({ sectionRef, faqItemsRef: cardsRef })
   const programs = [
     {
       title: 'Yoga',
@@ -82,7 +35,7 @@ const ProgramsSection = () => {
   ]
 
   return (
-    <section 
+    <div 
       ref={sectionRef}
       className="py-20 bg-dark-bg relative overflow-hidden"
       id="programs"
@@ -151,7 +104,7 @@ const ProgramsSection = () => {
           </Link>
         </div>
       </div>
-    </section>
+    </div>
   )
 }
 

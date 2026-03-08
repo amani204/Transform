@@ -1,11 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Menu, X, ArrowUpRight } from 'lucide-react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-gsap.registerPlugin(ScrollTrigger) //activate the ScrollTrigger plugin
-
+import { useNavbarScroll, useMobileMenu } from '../../hooks'
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const location = useLocation()
@@ -28,142 +24,26 @@ const Navbar = () => {
   ]
   
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-
-      gsap.set(navRef.current, {
-        width: '80%',
-        left: '10%',
-        skewX: -20,
-        backgroundColor: 'rgba(18, 18, 18, 0.3)',
-        backdropFilter: 'blur(15px)',
-        marginTop: '3rem',
-        border: '1px solid rgba(218, 252, 68, 1)',
-      })
-
-     
-      gsap.set(menuBtnRef.current, { opacity: 0, pointerEvents: 'none' })
-
-      gsap.fromTo(logoRef.current,
-        { opacity: 0, x: -30 },
-        { opacity: 1, x: 0, duration: 0.8, ease: 'power3.out' }
-      )
-      gsap.fromTo(linksRef.current.children, //wave effect
-        { opacity: 0, y: -20 },
-        { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out', delay: 0.2 }
-      )
-      
-
-      
-      ScrollTrigger.create({
-        trigger: document.body, // What element triggers this?
-        start: 'top -80px',
-
-        onEnter: () => {    // What happens when scrolling down
-          const tl = gsap.timeline() // Creates a timeline (sequence of animations)
-         
-          // Fade out links
-          tl.to([linksRef.current.children], {
-            opacity: 0,
-            duration: 0.25,
-            ease: 'power2.in',
-          })
-
-          // Transform navbar
-          tl.to(navRef.current, {
-            width: 'auto',
-            left: '50%',
-            xPercent: -50,
-            skewX: -20,
-            marginTop: '1rem',
-            backgroundColor: 'rgba(10, 10, 10, 0.95)',
-            backdropFilter: 'blur(0px)',
-            border: '1px solid rgba(255,255,255,0.08)',
-            duration: 0.5,
-            ease: 'power3.inOut',
-          }, '-=0.1')
-
-          /
-          tl.to(menuBtnRef.current, {
-            opacity: 1,
-            pointerEvents: 'auto',
-            duration: 0.3,
-            ease: 'power2.out',
-          }, '-=0.1')
-        },
-
-        onLeaveBack: () => {   // What happens when scrolling up
-          const tl = gsap.timeline()
-
-          // Hide mobile button
-          tl.to(menuBtnRef.current, {
-            opacity: 0,
-            pointerEvents: 'none',
-            duration: 0.2,
-            ease: 'power2.in',
-          })
-          // Restore navbar to original state
-          tl.to(navRef.current, {
-            width: '80%',
-            left: '10%',
-            xPercent: 0,
-            skewX: -20,
-            marginTop: '3rem',
-            backgroundColor: 'rgba(18, 18, 18, 0.3)',
-            backdropFilter: 'blur(15px)',
-            border: '1px solid rgba(218, 252, 68, 1)',
-            duration: 0.5,
-            ease: 'power3.inOut',
-          }, '-=0.1')
-          
-         // Fade links back in
-          tl.to([linksRef.current.children], {
-            opacity: 1,
-            duration: 0.4,
-            ease: 'power2.out',
-          })
-        },
-      })
-
-    }, navRef)
-
-    return () => ctx.revert()
-  }, [])
-
-
-  useEffect(() => {
-    if (isMobileMenuOpen) {
-      gsap.to(mobileMenuRef.current, {
-        clipPath: 'circle(150% at 95% 5%)',  // Expands from top-right (huge circle covering entire screen)
-        duration: 0.8,
-        ease: 'power4.inOut',
-      })
-      gsap.fromTo(mobileLinksRef.current.children,
-        { y: 100, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6, stagger: 0.1, ease: 'power3.out', delay: 0.3 }
-      )
-    } else {
-      gsap.to(mobileMenuRef.current, {
-        clipPath: 'circle(0% at 95% 5%)', //tiny circle at top-right
-        duration: 0.6,
-        ease: 'power4.inOut',
-      })
-    }
-  }, [isMobileMenuOpen])
+  useNavbarScroll({ navRef, logoRef, linksRef, menuBtnRef })
+  useMobileMenu(isMobileMenuOpen, { menuRef: mobileMenuRef, linksRef: mobileLinksRef })
 
   const handleNavClick = (e, href) => {
-    if (href.startsWith('#')) {
-      e.preventDefault()
-      if (!isHome) {
-        navigate('/' + href)
-      } else {
-        const element = document.querySelector(href)
-        if (element) element.scrollIntoView({ behavior: 'smooth' })
+  if (href.startsWith('#')) {
+    e.preventDefault()
+    
+    if (!isHome) {
+      // Navigate to home and pass the target section
+      navigate('/', { state: { scrollTo: href } })
+    } else {
+      // Already on home, just scroll
+      const element = document.querySelector(href)
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' })
       }
     }
-    setIsMobileMenuOpen(false)
   }
-
+  setIsMobileMenuOpen(false)
+}
   return (
     <>
       <nav ref={navRef} className="fixed top-0 z-50">
@@ -186,7 +66,7 @@ const Navbar = () => {
                   <a
                     key={link.name}
                     href={link.href}
-                    onClick={(e) => handleNavClick(e, link.href)}
+                    onClick={(e) => handleNavClick(e, link.href)} 
                     className="nav-link text-sm font-semibold uppercase tracking-wide whitespace-nowrap"
                   >
                     {link.name}

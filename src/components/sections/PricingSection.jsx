@@ -1,60 +1,12 @@
-import { useState, useEffect, useRef } from 'react'
-import { Link } from 'react-router-dom'
-import { Check, ArrowRight, Calendar, Users, Sparkles, ChevronRight } from 'lucide-react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-gsap.registerPlugin(ScrollTrigger)
+import { useRef } from 'react'
+import { Check, ChevronRight } from 'lucide-react'
+import { useFadeUp } from '../../hooks'
 
 const PricingSection = () => {
-
   const sectionRef = useRef(null)
-  const cardsRef = useRef([])
-
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      
-      // Cards appear one after another from bottom
-      gsap.fromTo(cardsRef.current,
-        { 
-          opacity: 0, 
-          y: 100,
-          scale: 0.9
-        },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.8,
-          stagger: 0.2,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 70%',
-          }
-
-          
-        }
-      )
-      gsap.fromTo(sectionRef.current,
-        { opacity: 0, y: 50 },
-        {
-          opacity: 1, y: 0,
-          duration: 1,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 80%',
-          }
-        }
-      )
-
-    }, sectionRef)
-    
-    return () => ctx.revert()
-  }, [])
-
+  const cardsWrapperRef = useRef(null)
+  useFadeUp(sectionRef, { start: 'top 80%', y: 50 })
+  useFadeUp(cardsWrapperRef, { stagger: 0.2, start: 'top 70%', y: 100 })
   const programs = [
     {
       name: 'Starter',
@@ -129,12 +81,11 @@ const PricingSection = () => {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4  mt-12">
+        <div ref={cardsWrapperRef} className="grid grid-cols-1 lg:grid-cols-3 gap-4  mt-12">
           {programs.map((program, index) => {
             return (
               <div
                 key={index}
-                ref={el => cardsRef.current[index] = el}
                 className={`bg-dark-card relative ${program.borderColor} ${
                   program.popular ? 'p-10' : 'p-8'
                 }`}

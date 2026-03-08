@@ -158,7 +158,7 @@ const ExerciseCard = ({ exercise, onClick, animRef, usingMock }) => {
       {/* ── CARD BODY ───────────────────────────────────────────── */}
       <div className="p-5">
         <h3 className="font-bold text-white text-sm mb-2 leading-tight capitalize"
-          style={{ fontFamily: 'Georgia, serif' }}>
+         >
           {name}
         </h3>
         <div className="flex items-center justify-between">

@@ -39,7 +39,7 @@ body {
   transition: background-color 0.3s, color 0.3s;
   background-color: var(--color-dark-bg);
   color: var(--color-text-primary);
-  font-family: Archivo, sans-serif;
+   font-family: Roboto , sans-serif;
 }
 
 /* Custom components */

@@ -1,7 +1,6 @@
-import { useRef, useEffect } from 'react'
-import gsap from 'gsap'
+import { useRef } from 'react'
 import { Search, X } from 'lucide-react'
-
+ import { useFilterBarEntrance } from '../../hooks'
 const TABS = [
   { label: 'Body Part', value: 'bodyPart' },
   { label: 'Equipment', value: 'equipment' },
@@ -15,13 +14,8 @@ const FilterBar = ({
   searchQuery, changeSearch,
 }) => {
   const barRef = useRef(null)
-
-  useEffect(() => {
-    gsap.fromTo(barRef.current,
-      { y: -16, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out', delay: 0.2 }
-    )
-  }, [])
+  useFilterBarEntrance(barRef)
+  
 
   return (
     <div

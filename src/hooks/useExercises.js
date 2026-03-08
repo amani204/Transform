@@ -9,13 +9,13 @@ const getHeaders = () => ({
   'X-RapidAPI-Host': 'exercisedb.p.rapidapi.com',
 })
 
-// ── Module-level state (persists across remounts) ─────────────────────────────
+// Module-level state (persists across remounts)
 const cache         = new Map()
 let   apiAvailable  = null          // null = unknown, true/false after first check
 let   lastCheckTime = 0
 const CHECK_INTERVAL = 60 * 60 * 1000  // 60 minutes
 
-// ── Static filter lists ───────────────────────────────────────────────────────
+// Static filter lists
 export const STATIC_BODY_PARTS = [
   'all', 'back', 'cardio', 'chest', 'lower arms', 'lower legs',
   'neck', 'shoulders', 'upper arms', 'upper legs', 'waist',
@@ -33,7 +33,7 @@ export const STATIC_TARGETS = [
   'hamstrings', 'lats', 'pectorals', 'quads', 'traps', 'triceps', 'upper back',
 ]
 
-// ── Mock data (shown when API is unavailable) ─────────────────────────────────
+// Mock data (shown when API is unavailable)
 const MOCK_EXERCISES = [
   { id: '0001', name: '3/4 Sit-Up',         bodyPart: 'waist',      equipment: 'body weight', target: 'abs',        secondaryMuscles: ['hip flexors'], instructions: ['Lie on your back with knees bent.', 'Curl up to 45 degrees.', 'Lower back down slowly.'] },
   { id: '0002', name: 'Barbell Bench Press', bodyPart: 'chest',      equipment: 'barbell',     target: 'pectorals',  secondaryMuscles: ['triceps', 'delts'], instructions: ['Lie on bench, grip barbell.', 'Lower to chest.', 'Press back up.'] },
@@ -49,7 +49,7 @@ const MOCK_EXERCISES = [
   { id: '0012', name: 'Leg Raise',           bodyPart: 'waist',      equipment: 'body weight', target: 'abs',        secondaryMuscles: ['hip flexors'], instructions: ['Lie flat, legs straight.', 'Raise legs to 90°.', 'Lower without touching floor.'] },
 ]
 
-// ── API availability check ────────────────────────────────────────────────────
+// API availability check
 const checkApiAvailability = async () => {
   const now = Date.now()
   // Skip if checked recently
@@ -75,7 +75,7 @@ const checkApiAvailability = async () => {
   return apiAvailable
 }
 
-// ── Fetch with headers + cache ────────────────────────────────────────────────
+// Fetch with headers + cache 
 const apiFetch = async (url, signal) => {
   if (cache.has(url)) return cache.get(url)
   const res = await fetch(url, { headers: getHeaders(), signal })
@@ -98,7 +98,7 @@ const buildUrl = (filterType, activeFilter, searchQuery, page) => {
   return `${base}${paginate}`
 }
 
-// ── Filter mock data client-side ──────────────────────────────────────────────
+// Filter mock data client-side 
 const filterMock = (filterType, activeFilter, searchQuery, page) => {
   let results = MOCK_EXERCISES
 
@@ -125,7 +125,7 @@ const filterMock = (filterType, activeFilter, searchQuery, page) => {
   }
 }
 
-// ── Hook ──────────────────────────────────────────────────────────────────────
+// Hook
 export const useExercises = () => {
   const [filterType,   setFilterType]   = useState('bodyPart')
   const [activeFilter, setActiveFilter] = useState('all')
@@ -153,7 +153,7 @@ export const useExercises = () => {
     setError(null)
 
     try {
-      // 1. Check if API is available (cached for 60 min)
+      // Check if API is available (cached for 60 min)
       const available = await checkApiAvailability()
 
       if (!available) {

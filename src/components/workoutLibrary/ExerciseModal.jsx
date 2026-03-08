@@ -123,7 +123,7 @@ const ExerciseModal = ({ exercise, onClose }) => {
         {/* Content */}
         <div className="flex-1 px-7 pb-10 pt-4">
           <h2 className="text-2xl font-bold text-white mb-2 capitalize leading-snug"
-            style={{ fontFamily: 'Georgia, serif' }}>
+            >
             {name}
           </h2>
 
@@ -162,7 +162,7 @@ const ExerciseModal = ({ exercise, onClose }) => {
             <ol className="space-y-4">
               {instructions.map((step, i) => (
                 <li key={i} className="flex gap-3">
-                  <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center text-xs font-black mt-0.5"
+                  <span className="shrink-0 w-6 h-6 flex items-center justify-center text-xs font-black mt-0.5 "
                     style={{ background: color, color: '#000' }}>
                     {i + 1}
                   </span>

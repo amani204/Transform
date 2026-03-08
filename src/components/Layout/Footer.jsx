@@ -1,26 +1,48 @@
 import { useEffect, useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom' // ✅ Add useNavigate
 import { Facebook, Instagram, Twitter, Youtube } from 'lucide-react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useFooterEntrance } from '../../hooks'
 
-gsap.registerPlugin(ScrollTrigger)
 
 const Footer = () => {
+  const location = useLocation()
+  const navigate = useNavigate() 
+  const isHome = location.pathname === '/'
+  
   const footerRef = useRef(null)
   const brandRef = useRef(null)
   const linksRef = useRef(null)
   const socialsRef = useRef(null)
   const bottomRef = useRef(null)
-
+  useFooterEntrance({ footerRef, brandRef, linksRef, socialsRef, bottomRef })
   const navLinks = [
     { name: 'Home', href: '/' },
-    { name: 'Programs', href: '#programs' },
+    { name: 'Programs', href: isHome ? '#programs' : '/#programs' },
     { name: 'Workout Library', href: '/workoutLibrary' },
-    { name: 'Team', href: '#team' },
-    { name: 'FAQ', href: '#faq' },
-    { name: 'Contact', href: '#contact' }
+    { name: 'Team', href: isHome ? '#team' : '/#team' },
+    { name: 'FAQ', href: isHome ? '#faq' : '/#faq' },
+    { name: 'Contact', href: '/contact' }
   ]
+
+  const handleFooterClick = (e, href) => {
+    if (href.startsWith('#')) {
+      e.preventDefault()
+      if (isHome) {
+        // On home page - smooth scroll
+        const element = document.querySelector(href)
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' })
+        }
+      } else {
+        // Not on home - navigate to home with state
+        navigate('/', { state: { scrollTo: href } })
+      }
+    } else if (href.startsWith('/#')) {
+      e.preventDefault()
+      // Handle /# links from other pages
+      navigate('/', { state: { scrollTo: href.substring(1) } }) // Remove the leading /
+    }
+  }
 
   const socialLinks = [
     { icon: Facebook, href: 'https://facebook.com', label: 'Facebook' },
@@ -29,49 +51,7 @@ const Footer = () => {
     { icon: Youtube, href: 'https://youtube.com', label: 'Youtube' }
   ]
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      
-      // Create a master timeline for better control
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: footerRef.current,
-          start: 'top 90%',
-          toggleActions: 'play none none none',
-        }
-      })
 
-      // Brand slides in from left
-      tl.fromTo(brandRef.current,
-        { x: -60, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.9, ease: 'power3.out' }
-      )
-
-      // Navigation links slide in from right with stagger
-      tl.fromTo(linksRef.current.querySelectorAll('li'),
-        { x: 40, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.6, stagger: 0.08, ease: 'power3.out' },
-        '-=0.4' // Start slightly before brand finishes
-      )
-
-      // Social icons pop in with bounce
-      tl.fromTo(socialsRef.current.querySelectorAll('a'),
-        { scale: 0, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.5, stagger: 0.1, ease: 'back.out(1.7)' },
-        '-=0.2'
-      )
-
-      // Bottom copyright fades up
-      tl.fromTo(bottomRef.current,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' },
-        '+=0.2' // Start after everything else
-      )
-
-    }, footerRef)
-
-    return () => ctx.revert()
-  }, [])
 
   return (
     <footer ref={footerRef} className="bg-dark-bg border-t border-dark-border pt-16 pb-8">
@@ -113,15 +93,25 @@ const Footer = () => {
           </div>
 
           {/* Right Column - Links */}
-          <ul ref={linksRef} className="space-y-3">
+          <ul ref={linksRef} className="space-y-3 md:text-right">
             {navLinks.map((link) => (
-              <li key={link.name}>
-                <Link
-                  to={link.href}
-                  className="text-text-secondary hover:text-primary transition-colors duration-300"
-                >
-                  {link.name}
-                </Link>
+              <li key={link.name} style={{ opacity: 0 }}>
+                {link.href.startsWith('#') || link.href.startsWith('/#') ? (
+                  <a
+                    href={link.href}
+                    onClick={(e) => handleFooterClick(e, link.href)}
+                    className="text-text-secondary hover:text-primary transition-colors duration-300 cursor-pointer"
+                  >
+                    {link.name}
+                  </a>
+                ) : (
+                  <Link
+                    to={link.href}
+                    className="text-text-secondary hover:text-primary transition-colors duration-300"
+                  >
+                    {link.name}
+                  </Link>
+                )}
               </li>
             ))}
           </ul>

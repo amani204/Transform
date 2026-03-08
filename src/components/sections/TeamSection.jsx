@@ -1,7 +1,5 @@
-import { useEffect, useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { useRef } from 'react'
 import { ArrowRight, Users } from 'lucide-react'
-import gsap from 'gsap'
 import JamesCarter from '../../assets/trainers/boy1.jpg'
 import EthanBrooks from '../../assets/trainers/boy2.jpg'
 import SofiaRamirez  from '../../assets/trainers/girl1.jpg'
@@ -9,7 +7,7 @@ import MarcusJohnson from '../../assets/trainers/boy6.jpg'
 import LucasWard  from '../../assets/trainers/boy7.jpg'
 import EmmaRoberts from '../../assets/trainers/girl2.jpg'
 import AlexRodriguez  from '../../assets/trainers/boy8.jpg'
-
+import { useFadeUp, useMarqueeHalf, useSlideIn } from '../../hooks'
 
 import person1Img from '../../assets/testimonials/person1Img.jpg'
 import person2Img from '../../assets/testimonials/person2Img.jpg'
@@ -24,6 +22,10 @@ const TeamSection = () => {
   const sectionRef = useRef(null)
   const headerRef = useRef(null)
 
+
+  useFadeUp(headerRef, { stagger: 0.15, start: 'top 80%' })
+  useMarqueeHalf(marqueeRef, { duration: 50 })
+  useSlideIn(sectionRef, { from: 'up', distance: 50, start: 'top 80%' })
   const trainers = [
     {
       name: 'James Carter',
@@ -110,68 +112,12 @@ const TeamSection = () => {
     },
     
   ]
- // Header children animation  + Marquee infinite loop 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const marquee = marqueeRef.current
-      const marqueeWidth = marquee.scrollWidth / 2 // Half because we duplicate
-      //Why duplicate? So when the first set moves out, the duplicate is already there to replace it.
-     
-       gsap.fromTo(
-        headerRef.current.children,
-        { y: 30, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          stagger: 0.15,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: headerRef.current,
-            start: 'top 80%',
-            toggleActions: 'play none none none',
-          },
-        }
-      )
 
-      
-      gsap.to(marquee, {
-        x: -marqueeWidth,  // Move left by half the width
-        duration: 50,  // Takes 50 seconds for one loop
-        ease: 'none', // Constant speed (no easing)
-        repeat: -1, // Loop forever
-        modifiers: {
-          x: gsap.utils.unitize(x => parseFloat(x) % marqueeWidth)  // Reset position
-        }
-      })
-      
-    }, marqueeRef)
 
-    return () => ctx.revert()
-  }, [])
 
- //Section fade in 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo(sectionRef.current,
-        { opacity: 0, y: 50 },
-        {
-          opacity: 1, y: 0,
-          duration: 1,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 80%',
-          }
-        }
-      )
-    }, sectionRef)
-
-    return () => ctx.revert()
-  }, [])
 
   return (
-    <section 
+    <div 
       ref={sectionRef}
       className="py-20 bg-dark-bg relative overflow-hidden"
       id="team"
@@ -337,7 +283,7 @@ const TeamSection = () => {
           </div>
         </div>
       </div>
-    </section>
+    </div>
   )
 }
 
