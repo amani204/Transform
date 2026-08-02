@@ -6,7 +6,7 @@ The application combines cinematic UI animations with a dynamic workout library 
 ---
 
 ## Live Demo
-(https://transform-stt7.vercel.app/)
+https://transform-stt7.vercel.app/
 
 ##Highlights
 
@@ -191,7 +191,4 @@ npm run preview   # Preview production build
 
 ---
 ## Author
-**Built by Amani**
-## License
-
-MIT
+*Amani*
