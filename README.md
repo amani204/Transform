@@ -8,7 +8,7 @@ The application combines cinematic UI animations with a dynamic workout library 
 ## Live Demo
 https://transform-stt7.vercel.app/
 
-##Highlights
+## Highlights
 
 - Cinematic GSAP page-load animations
 - Interactive workout library with 1300+ exercises
